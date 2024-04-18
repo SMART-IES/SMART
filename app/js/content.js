@@ -6,7 +6,7 @@ function scrape() {
     }
 
     let count = 0;
-    let elements = document;
+    let elements = document.getElementsByTagName("div");
 
     for (let i = 0; i < elements.length; i++) {
         count += 1; 
