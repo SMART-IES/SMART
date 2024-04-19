@@ -20,6 +20,7 @@ Inform clearly and precisely the users about the dark patterns present during th
 ## Material
 
 -Install JupyterNotebook and Flask for python 
+-Run server with command : python3 server.py
 
 ## Note for Students
 
