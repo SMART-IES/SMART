@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "SMART-IES",
+    "name": "SMART",
     "version": "1.0",
-    "description": "SMART-IES",
+    "description": "SMART",
     "action": {
         "default_popup": "popup/popup.html"
     },
