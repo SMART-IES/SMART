@@ -7,14 +7,19 @@ Project [SMART(PLD)](riccardotommasini.com/teaching/smart) is provided by [INSA 
 Students: **Zeyang Kong, Hugo Saysana, Hélène Dos Santos, An Jun Tong, Florentin Koch, Seynabou Sarr**
 
 ### Abstract
+Chrome extension for recognizing some commercial dark patterns on the web. 
 
 ## Description 
+Dark Pattern definition : "a user interface that has been carefully crafted to trick users into doing things, such as buying overpriced insurance with their purchase or signing up for recurring bills"
 
 ## Project Goal
+Inform clearly and precisely the users about the dark patterns present during their internet browsing
 
 ## Requirements
 
 ## Material
+
+-Install JupyterNotebook and Flask for python 
 
 ## Note for Students
 
