@@ -1,5 +1,3 @@
-let bob = 0
-
 //---Test : count text elements number---// 
 function scrape() {
     if(document.getElementById("count_number")) {
@@ -33,9 +31,9 @@ async function predictWithModel(data) {
       headers: {
           'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data)  // Les données à envoyer au serveur
+      body: JSON.stringify(data) 
   });
-  const result = await response.json();  // Récupérer les résultats de la prédiction
+  const result = await response.json();  
   return result.prediction;
 }
 
@@ -54,8 +52,8 @@ function darkPatternIdentification() {
           allTexts.push(textContent);
 
           //dark pattern or not 
-          predictWithModel({texte: textContent}).then(prediction => {
-            if(prediction[0] == "Yes" ){
+          predictWithModel({texte: textContent}).then(result => {
+            if(result.prediction == "Yes" ){
               //highlight if yes
               highlightTextElements(element)
             }
