@@ -44,7 +44,6 @@ function highlightTextElements(element) {
 function darkPatternIdentification() {
   let textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, div, li, td, a');
   let allTexts = [];
-  let promises = [];
 
   //recup all elements 
   textElements.forEach(element => {
@@ -54,20 +53,18 @@ function darkPatternIdentification() {
           allTexts.push(textContent);
 
           //dark pattern or not 
-          let predictionPromise = predictWithModel({text: textContent}).then(result => {
+          predictWithModel({text: textContent}).then(result => {
             //(display of process on consol)
             console.log(`Balise: ${elementType}, Texte: "${textContent}", Résultat de la prédiction: ${result}`);
-            console.log("surligné");
             if(result === "Yes" ){
               //highlight if yes
               console.log("surligné");
               highlightTextElements(element)
             }
           });
-          promises.push(predictionPromise);
       }
   });
-  return Promise.all(promises).then(() => allTexts);
+  return allTexts;
 }
 
 
