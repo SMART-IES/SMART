@@ -1,4 +1,4 @@
-//---Test : count text elements number---// 
+//---Count text elements number---// 
 function scrape() {
     if(document.getElementById("count_number")) {
         return;
@@ -44,25 +44,32 @@ function highlightTextElements(element) {
 function darkPatternIdentification() {
   let textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, div, li, td, a');
   let allTexts = [];
+  let promises = [];
 
   //recup all elements 
   textElements.forEach(element => {
       let textContent = element.textContent.trim();
+      let elementType = element.tagName;
       if (textContent.length > 0) {
           allTexts.push(textContent);
 
           //dark pattern or not 
-          predictWithModel({texte: textContent}).then(result => {
-            if(result.prediction == "Yes" ){
+          let predictionPromise = predictWithModel({text: textContent}).then(result => {
+            //(display of process on consol)
+            console.log(`Balise: ${elementType}, Texte: "${textContent}", Résultat de la prédiction: ${result}`);
+            console.log("surligné");
+            if(result === "Yes" ){
               //highlight if yes
+              console.log("surligné");
               highlightTextElements(element)
             }
           });
+          promises.push(predictionPromise);
       }
   });
-
-  return allTexts;
+  return Promise.all(promises).then(() => allTexts);
 }
+
 
 chrome.runtime.onMessage.addListener((request) => {
     if (request.message === "analyze_site") {
@@ -75,3 +82,8 @@ chrome.runtime.onMessage.addListener((request) => {
       }
     }
   });
+
+
+
+
+

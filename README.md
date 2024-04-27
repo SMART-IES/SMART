@@ -19,7 +19,7 @@ Inform clearly and precisely the users about the dark patterns present during th
 
 ## Material
 
--Install JupyterNotebook, Flask, flask-cors for python 
+-Install JupyterNotebook, Flask, flask-cors, postman (optional to test API) 
 -Run server with command : python3 server.py
 
 ## Note for Students
