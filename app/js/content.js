@@ -42,7 +42,7 @@ function darkPatternIdentification() {
 
   //recup all elements 
   textElements.forEach(element => {
-    if (element.childNodes.length == 1) {
+    if (element.childNodes.length == 1 && element.childNodes[0].nodeType === Node.TEXT_NODE) {
       let textContent = element.textContent.trim();
       let elementType = element.tagName;
 
