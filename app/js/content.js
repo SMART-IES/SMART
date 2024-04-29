@@ -1,7 +1,7 @@
 
 
-function sendNumber(count) {
-  chrome.runtime.sendMessage({ message: "update_number", count: count });
+function sendNumber(countDarkPatterns, countPrice) {
+  chrome.runtime.sendMessage({ message: "update_number", countDarkPatterns: countDarkPatterns, countPrice: countPrice});
 }
 
 //---Request on AI python API server.py---// 
@@ -19,13 +19,18 @@ async function predictWithModel(data) {
 
 function highlightTextElements(element) {
   element.style.backgroundColor = 'yellow';
-  let e = document.getElementById("count_number");
+  element.style.borderColor = 'black';
+  element.style.borderWidth = '2px';
+  let e = document.getElementById("count_number_DarkPatterns");
   e.value++;
+  
 }
 
 function highlightprice(element) {
   element.style.backgroundColor = 'red';
-  let e = document.getElementById("count_number");
+  element.style.borderColor = 'black';
+  element.style.borderWidth = '2px';
+  let e = document.getElementById("count_number_Price");
   e.value++;
 }
 
@@ -33,15 +38,27 @@ function darkPatternIdentification() {
   let textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, div, li, td, a, label');
   let allTexts = [];
 
-  if (!document.getElementById("count_number")) {
+  if (!document.getElementById("count_number_DarkPatterns")) {
     let g = document.createElement("div");
-    g.id = "count_number";
+    g.id = "count_number_DarkPatterns";
     g.value = 0;
     g.style.opacity = 0;
     g.style.position = "fixed";
     document.body.appendChild(g);
   } else {
-    let e = document.getElementById("count_number");
+    let e = document.getElementById("count_number_DarkPatterns");
+    e.value = 0;
+  }
+
+  if (!document.getElementById("count_number_Price")) {
+    let g = document.createElement("div");
+    g.id = "count_number_Price";
+    g.value = 0;
+    g.style.opacity = 0;
+    g.style.position = "fixed";
+    document.body.appendChild(g);
+  } else {
+    let e = document.getElementById("count_number_Price");
     e.value = 0;
   }
 
@@ -55,7 +72,7 @@ function darkPatternIdentification() {
       if (textContent.length > 0) {
         allTexts.push(textContent);
         // prix barre
-        if (element.className.includes("strike")) {
+        if (element.className.includes("strike") || element.style.textDecoration.includes("line-through")) {
           console.log("Prix barré");
           highlightprice(element);
         }
@@ -92,8 +109,9 @@ chrome.runtime.onMessage.addListener((request) => {
 chrome.runtime.onMessage.addListener((request) => {
   if (request.message === "number") {
 
-    let e = document.getElementById("count_number");
-    sendNumber(e.value);
+    let e1 = document.getElementById("count_number_DarkPatterns");
+    let e2 = document.getElementById("count_number_Price");
+    sendNumber(e1.value, e2.value);
   }
 }
 );

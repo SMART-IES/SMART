@@ -18,6 +18,7 @@ window.onload = function () {
   
 chrome.runtime.onMessage.addListener(function (request) {
     if (request.message === "update_number") {
-      document.getElementsByClassName("number")[0].textContent = request.count;
+      document.getElementsByClassName("numberDarkPatterns")[0].textContent = request.countDarkPatterns;
+      document.getElementsByClassName("numberPrice")[0].textContent = request.countPrice;
     }
   });
