@@ -38,6 +38,9 @@ function darkPatternIdentification() {
   let textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, div, li, td, a, label');
   let allTexts = [];
 
+  // Create a Promise that resolves when all predictions are complete
+  const predictionPromises = [];
+
   if (!document.getElementById("count_number_DarkPatterns")) {
     let g = document.createElement("div");
     g.id = "count_number_DarkPatterns";
@@ -90,7 +93,8 @@ function darkPatternIdentification() {
 
 
         //dark pattern or not 
-        predictWithModel({ text: textContent }).then(result => {
+        // Create a Promise for each prediction
+        const predictionPromise = predictWithModel({ text: textContent }).then(result => {
           //(display of process on consol)
 
           console.log(`Balise: ${elementType}, Texte: "${textContent}", Résultat de la prédiction: ${result}`);
@@ -101,14 +105,19 @@ function darkPatternIdentification() {
             highlightTextElements(element)
           }
         });
-
+        predictionPromises.push(predictionPromise);
       }
     }
 
   });
 
 
-  return allTexts;
+  return Promise.all(predictionPromises).then(() => {
+    
+    chrome.runtime.sendMessage({ message: "tasks_complete" });
+    console.log("END");
+    return allTexts;
+});
 }
 
 
