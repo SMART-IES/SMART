@@ -1,7 +1,7 @@
 
 
 function sendNumber(countDarkPatterns, countPrice) {
-  chrome.runtime.sendMessage({ message: "update_number", countDarkPatterns: countDarkPatterns, countPrice: countPrice});
+  chrome.runtime.sendMessage({ message: "update_number", countDarkPatterns: countDarkPatterns, countPrice: countPrice });
 }
 
 //---Request on AI python API server.py---// 
@@ -23,7 +23,7 @@ function highlightTextElements(element) {
   element.style.borderWidth = '2px';
   let e = document.getElementById("count_number_DarkPatterns");
   e.value++;
-  
+
 }
 
 function highlightprice(element) {
@@ -63,8 +63,23 @@ function darkPatternIdentification() {
   }
 
 
+
   //recup all elements 
   textElements.forEach(element => {
+
+    if (element.className.includes("strike") || element.style.textDecoration.includes("line-through")) {
+      console.log("Prix barré");
+      highlightprice(element);
+    }
+
+    for (let i = 0; i < element.attributes.length; i++) {
+      const attributeName = element.attributes[i].name;
+      if (attributeName.includes("strike")) {
+        console.log("Prix barré");
+        highlightprice(element);
+      }
+    }
+
     if (element.childNodes.length == 1 && element.childNodes[0].nodeType === Node.TEXT_NODE) {
       let textContent = element.textContent.trim();
       let elementType = element.tagName;
@@ -72,11 +87,8 @@ function darkPatternIdentification() {
       if (textContent.length > 0) {
         allTexts.push(textContent);
         // prix barre
-        if (element.className.includes("strike") || element.style.textDecoration.includes("line-through")) {
-          console.log("Prix barré");
-          highlightprice(element);
-        }
-      
+
+
         //dark pattern or not 
         predictWithModel({ text: textContent }).then(result => {
           //(display of process on consol)
@@ -89,7 +101,7 @@ function darkPatternIdentification() {
             highlightTextElements(element)
           }
         });
-        
+
       }
     }
 
