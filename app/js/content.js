@@ -65,7 +65,7 @@ function darkPatternIdentification() {
           //(display of process on consol)
 
           console.log(`Balise: ${elementType}, Texte: "${textContent}", Résultat de la prédiction: ${result}`);
-          if (result === "Yes") {
+          if (result === "1") {
             //highlight if yes
             console.log("surligné");
 

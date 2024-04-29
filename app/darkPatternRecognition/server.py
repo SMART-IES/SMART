@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from Recognition import modelRandomForest
 
 #simulate a model from DarkPattern
 key_words = ["payer cet article en", "il ne reste plus que", "Achetez"]
@@ -18,9 +19,9 @@ CORS(app, resources={r"/predict": {"origins": "*"}})
 @app.route('/predict', methods=['POST'])
 def predict():
     data = request.json  
-    #prediction = modelRandomForest.predict(data) 
-    prediction = testModel(data["text"])
-    return jsonify({'prediction': prediction})
+    prediction = modelRandomForest.predict([data["text"]])[0] 
+    prediction_str = str(prediction)  
+    return jsonify({'prediction': prediction_str})
 
 if __name__ == '__main__':
     app.run(port=5000) 
