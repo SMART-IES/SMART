@@ -23,6 +23,12 @@ function highlightTextElements(element) {
   e.value++;
 }
 
+function highlightprice(element) {
+  element.style.backgroundColor = 'red';
+  let e = document.getElementById("count_number");
+  e.value++;
+}
+
 function darkPatternIdentification() {
   let textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, div, li, td, a, label');
   let allTexts = [];
@@ -48,7 +54,12 @@ function darkPatternIdentification() {
 
       if (textContent.length > 0) {
         allTexts.push(textContent);
-
+        // prix barre
+        if (element.className.includes("strike")) {
+          console.log("Prix barré");
+          highlightprice(element);
+        }
+      
         //dark pattern or not 
         predictWithModel({ text: textContent }).then(result => {
           //(display of process on consol)
@@ -61,6 +72,7 @@ function darkPatternIdentification() {
             highlightTextElements(element)
           }
         });
+        
       }
     }
 
