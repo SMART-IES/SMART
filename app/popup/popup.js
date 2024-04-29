@@ -48,7 +48,16 @@ chrome.runtime.onMessage.addListener(function (request) {
     // Remove the loading GIF
     var loadingImage = document.getElementById("loading-image");
     if (loadingImage) {
+        // Create a new image element for the loading GIF
+        var finishImage = document.createElement("img");
+        finishImage.src = "finish.gif";
+        finishImage.id = "finish-image"; // Set the ID here
+
+
+        // Append the image just below the button
+        loadingImage.parentNode.insertBefore(finishImage, loadingImage.nextSibling);
         loadingImage.parentNode.removeChild(loadingImage);
     }
   }
+
 });
