@@ -22,6 +22,13 @@ Inform clearly and precisely the users about the dark patterns present during th
 -Install JupyterNotebook, Flask, flask-cors, postman (optional to test API) 
 -Run server with command : python3 server.py
 
+## Models for OCR
+- EAST : https://github.com/argman/EAST
+Download link : https://www.dropbox.com/s/r2ingd0l3zt8hxs/frozen_east_text_detection.tar.gz?dl=1
+
+- CRNN : https://github.com/meijieru/crnn.pytorch
+Download link : https://drive.google.com/drive/folders/1cTbQ3nuZG-EKWak6emD_s8_hHXWz7lAr?usp=sharing
+
 ## Note for Students
 
 * Clone the created repository offline;
