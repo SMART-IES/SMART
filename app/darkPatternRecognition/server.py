@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from Recognition import initialize_model
+from Recognition import initialize_model, initialize_model_category, initialize_category_encoder, decode_labels
 from googletrans import Translator
 from langdetect import detect
 
 # Initialize the model
+category_encoder = initialize_category_encoder()
 modelRandomForest = initialize_model()
+modelRandomForestCategory = initialize_model_category(category_encoder)
 
 # Simulate a model from DarkPattern
 key_words = ["payer cet article en", "il ne reste plus que", "Achetez"]
@@ -43,7 +45,9 @@ def predict():
     prediction = modelRandomForest.predict([translated])[0] 
     prediction_str = str(prediction)  
 
-    return jsonify({'prediction': prediction_str})
+    prediction_category = modelRandomForestCategory.predict([translated])[0] 
+    prediction_category_decoded = decode_labels(category_encoder, prediction_category)
+    return jsonify({'prediction': prediction_str, 'category': prediction_category_decoded})
     
 
 if __name__ == '__main__':

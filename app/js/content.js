@@ -14,7 +14,7 @@ async function predictWithModel(data) {
     body: JSON.stringify(data)
   });
   const result = await response.json();
-  return result.prediction;
+  return { prediction: result.prediction, category: result.category };
 }
 
 //---Highligh text elements---// 
@@ -118,10 +118,14 @@ function darkPatternIdentification() {
         // Create a Promise for each prediction
         const predictionPromise = predictWithModel({ text: textContent }).then(result => {
           //(display of process on consol)
-          console.log(`Balise: ${elementType}, Texte: "${textContent}", Résultat de la prédiction: ${result}`);
-          if (result === "1") {
+          console.log(`Balise: ${elementType}, Texte: "${textContent}", Résultat de la prédiction: ${result.prediction}`);
+          if (result.prediction === "1") {
+            if (result.category.length > 0 && result.category[0] === "Not Dark Pattern") {
+              result.category = "Failed to categorize"
+            }
             //highlight if yes
             console.log("surligné");
+            console.log(`Balise: ${elementType}, Texte: "${textContent}", Résultat de la prédiction: ${result.prediction}, Catégorie: ${result.category}`);
 
             highlightTextElements(element)
           }
