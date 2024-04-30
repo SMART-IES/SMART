@@ -4,10 +4,18 @@ from Recognition import initialize_model, initialize_model_category, initialize_
 from googletrans import Translator
 from langdetect import detect
 
+# dataset
+dataset_path_en = "dataset.tsv"
+dataset_path_fr = "dataset_français.tsv"
+
 # Initialize the model
-category_encoder = initialize_category_encoder()
-modelRandomForest = initialize_model()
-modelRandomForestCategory = initialize_model_category(category_encoder)
+category_encoder_en = initialize_category_encoder(dataset_path_en)
+modelRandomForest_en = initialize_model(dataset_path_en)
+modelRandomForestCategory_en = initialize_model_category(category_encoder_en, dataset_path_en)
+
+category_encoder_fr = initialize_category_encoder(dataset_path_fr)
+modelRandomForest_fr = initialize_model(dataset_path_fr)
+modelRandomForestCategory_fr = initialize_model_category(category_encoder_fr, dataset_path_fr)
 
 # Simulate a model from DarkPattern
 key_words = ["payer cet article en", "il ne reste plus que", "Achetez"]
@@ -22,32 +30,35 @@ def testModel(text):
 app = Flask(__name__)
 CORS(app, resources={r"/predict": {"origins": "*"}})
 
-def detect_and_translate(text):
+def detect(text):
     try:
         lang = detect(text)
-        if lang == 'en':
-            return text
-        elif lang == 'fr':
-            translator = Translator()
-            translated = translator.translate(text, src='fr', dest='en')
-            return translated.text
-        else:
-            return text
+        return lang
     except:
-        return text
+        return "en"
 
 @app.route('/predict', methods=['POST'])
 def predict():
     data = request.json  
 
     #Detect language and translate to English
-    translated = detect_and_translate(data["text"])
-    prediction = modelRandomForest.predict([translated])[0] 
-    prediction_str = str(prediction)  
+    lang = detect(data["text"])
+    if lang == "fr":
+        prediction = modelRandomForest_fr.predict([data["text"]])[0] 
+        prediction_str = str(prediction)  
 
-    prediction_category = modelRandomForestCategory.predict([translated])[0] 
-    prediction_category_decoded = decode_labels(category_encoder, prediction_category)
-    return jsonify({'prediction': prediction_str, 'category': prediction_category_decoded})
+        prediction_category = modelRandomForestCategory_fr.predict([data["text"]])[0] 
+        prediction_category_decoded = decode_labels(category_encoder_fr, prediction_category)
+        return jsonify({'prediction': prediction_str, 'category': prediction_category_decoded})
+    else:
+        prediction = modelRandomForest_en.predict([data["text"]])[0] 
+        prediction_str = str(prediction)  
+
+        prediction_category = modelRandomForestCategory_en.predict([data["text"]])[0] 
+        prediction_category_decoded = decode_labels(category_encoder_en, prediction_category)
+        return jsonify({'prediction': prediction_str, 'category': prediction_category_decoded})
+
+
     
 
 if __name__ == '__main__':

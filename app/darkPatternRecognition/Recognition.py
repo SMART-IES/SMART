@@ -7,11 +7,10 @@ from sklearn.preprocessing import LabelEncoder
 import numpy as np
 
 #Model parameters
-dataset_path = 'dataset.tsv'
 n_estimators = 1200 
 
 #function to create model
-def initialize_model():
+def initialize_model(dataset_path):
     #get the training data
     data = pd.read_csv(dataset_path, sep='\t')
 
@@ -28,7 +27,7 @@ def initialize_model():
     #return the trained model
     return modelRandomForest
 
-def initialize_model_category(label_encoder):
+def initialize_model_category(label_encoder, dataset_path):
     data = pd.read_csv(dataset_path, sep='\t')
 
     # Drop rows with missing values in 'text' and 'Pattern Category' columns
@@ -54,7 +53,7 @@ def initialize_model_category(label_encoder):
     # Return the trained model
     return modelRandomForest
 
-def initialize_category_encoder():
+def initialize_category_encoder(dataset_path):
     data = pd.read_csv(dataset_path, sep='\t')
 
     # Drop rows with missing values in 'text' and 'Pattern Category' columns
