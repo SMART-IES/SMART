@@ -7,7 +7,7 @@ from langdetect import detect
 # Initialize the model
 modelRandomForest = initialize_model()
 
-#simulate a model from DarkPattern
+# Simulate a model from DarkPattern
 key_words = ["payer cet article en", "il ne reste plus que", "Achetez"]
 def testModel(text): 
     text_lower = text.lower()  

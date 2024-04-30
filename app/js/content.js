@@ -17,6 +17,7 @@ async function predictWithModel(data) {
   return result.prediction;
 }
 
+//---Highligh text elements---// 
 function highlightTextElements(element) {
   element.style.backgroundColor = 'yellow';
   element.style.borderColor = 'black';
@@ -25,6 +26,7 @@ function highlightTextElements(element) {
   e.value++;
 }
 
+//---Highligh price elements---// 
 function highlightprice(element) {
   element.style.backgroundColor = 'red';
   element.style.borderColor = 'black';
@@ -106,7 +108,6 @@ function darkPatternIdentification() {
 
       if (textContent.length > 0) {
         allTexts.push(textContent);
-        // prix barre
 
         if(textContent.includes("email") || textContent.includes("Email") || textContent.includes("e-mail") || textContent.includes("E-mail") || textContent.includes("mail") || textContent.includes("Mail") || textContent.includes("contact") || textContent.includes("Contact") || textContent.includes("phone") || textContent.includes("Phone") || textContent.includes("telephone") || textContent.includes("Telephone") || textContent.includes("Téléphone") || textContent.includes("téléphone")){
           highlightAction(element);
@@ -117,7 +118,6 @@ function darkPatternIdentification() {
         // Create a Promise for each prediction
         const predictionPromise = predictWithModel({ text: textContent }).then(result => {
           //(display of process on consol)
-
           console.log(`Balise: ${elementType}, Texte: "${textContent}", Résultat de la prédiction: ${result}`);
           if (result === "1") {
             //highlight if yes
@@ -136,18 +136,19 @@ function darkPatternIdentification() {
   return Promise.all(predictionPromises).then(() => {
     
     chrome.runtime.sendMessage({ message: "tasks_complete" });
-    console.log("END");
+    console.log("End of detection");
     return allTexts;
 });
 }
 
-
+//---When analyze button pressed---// 
 chrome.runtime.onMessage.addListener((request) => {
   if (request.message === "analyze_site") {
     darkPatternIdentification()
   }
 });
 
+//---When get numbers button pressed---// 
 chrome.runtime.onMessage.addListener((request) => {
   if (request.message === "number") {
 
