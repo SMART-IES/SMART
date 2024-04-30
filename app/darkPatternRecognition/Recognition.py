@@ -51,7 +51,7 @@ def initialize_model_category(label_encoder):
     return modelRandomForest
 
 def initialize_category_encoder():
-    data = pd.read_csv('app/darkPatternRecognition/dataset.tsv', sep='\t')
+    data = pd.read_csv('dataset.tsv', sep='\t')
 
     # Drop rows with missing values in 'text' and 'Pattern Category' columns
     data.dropna(subset=['text', 'Pattern Category'], inplace=True)
