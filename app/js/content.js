@@ -1,5 +1,4 @@
-
-
+//---Send current number of dark patterns and price tags---// 
 function sendNumber(countDarkPatterns, countPrice) {
   chrome.runtime.sendMessage({ message: "update_number", countDarkPatterns: countDarkPatterns, countPrice: countPrice });
 }
@@ -17,15 +16,16 @@ async function predictWithModel(data) {
   return result.prediction;
 }
 
+//---Highligh text elements---// 
 function highlightTextElements(element) {
   element.style.backgroundColor = 'yellow';
   element.style.borderColor = 'black';
   element.style.borderWidth = '2px';
   let e = document.getElementById("count_number_DarkPatterns");
   e.value++;
-
 }
 
+//---Highligh price elements---// 
 function highlightprice(element) {
   element.style.backgroundColor = 'red';
   element.style.borderColor = 'black';
@@ -34,6 +34,7 @@ function highlightprice(element) {
   e.value++;
 }
 
+//---Identify dark patterns with the model---// 
 function darkPatternIdentification() {
   let textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, div, li, td, a, label');
   let allTexts = [];
@@ -96,7 +97,6 @@ function darkPatternIdentification() {
         // Create a Promise for each prediction
         const predictionPromise = predictWithModel({ text: textContent }).then(result => {
           //(display of process on consol)
-
           console.log(`Balise: ${elementType}, Texte: "${textContent}", Résultat de la prédiction: ${result}`);
           if (result === "1") {
             //highlight if yes
@@ -115,18 +115,19 @@ function darkPatternIdentification() {
   return Promise.all(predictionPromises).then(() => {
     
     chrome.runtime.sendMessage({ message: "tasks_complete" });
-    console.log("END");
+    console.log("End of detection");
     return allTexts;
 });
 }
 
-
+//---When analyze button pressed---// 
 chrome.runtime.onMessage.addListener((request) => {
   if (request.message === "analyze_site") {
     darkPatternIdentification()
   }
 });
 
+//---When get numbers button pressed---// 
 chrome.runtime.onMessage.addListener((request) => {
   if (request.message === "number") {
 
