@@ -207,6 +207,8 @@ if __name__ == "__main__":
 
             # decode the result into text
             print(decodeText(result))
+
+    
     
 
     

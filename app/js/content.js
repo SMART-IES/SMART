@@ -1,7 +1,7 @@
 
 
-function sendNumber(countDarkPatterns, countPrice) {
-  chrome.runtime.sendMessage({ message: "update_number", countDarkPatterns: countDarkPatterns, countPrice: countPrice });
+function sendNumber(countDarkPatterns, countPrice, countAction) {
+  chrome.runtime.sendMessage({ message: "update_number", countDarkPatterns: countDarkPatterns, countPrice: countPrice, countAction: countAction});
 }
 
 //---Request on AI python API server.py---// 
@@ -23,7 +23,6 @@ function highlightTextElements(element) {
   element.style.borderWidth = '2px';
   let e = document.getElementById("count_number_DarkPatterns");
   e.value++;
-
 }
 
 function highlightprice(element) {
@@ -31,6 +30,14 @@ function highlightprice(element) {
   element.style.borderColor = 'black';
   element.style.borderWidth = '2px';
   let e = document.getElementById("count_number_Price");
+  e.value++;
+}
+
+function highlightAction(element) {
+  element.style.backgroundColor = 'green';
+  element.style.borderColor = 'black';
+  element.style.borderWidth = '2px';
+  let e = document.getElementById("count_number_Action");
   e.value++;
 }
 
@@ -62,7 +69,17 @@ function darkPatternIdentification() {
     e.value = 0;
   }
 
-
+  if (!document.getElementById("count_number_Action")) {
+    let g = document.createElement("div");
+    g.id = "count_number_Action";
+    g.value = 0;
+    g.style.opacity = 0;
+    g.style.position = "fixed";
+    document.body.appendChild(g);
+  } else {
+    let e = document.getElementById("count_number_Action");
+    e.value = 0;
+  }
 
   //recup all elements 
   textElements.forEach(element => {
@@ -88,6 +105,10 @@ function darkPatternIdentification() {
         allTexts.push(textContent);
         // prix barre
 
+        if(textContent.includes("email") || textContent.includes("Email") || textContent.includes("e-mail") || textContent.includes("E-mail") || textContent.includes("mail") || textContent.includes("Mail") || textContent.includes("contact") || textContent.includes("Contact") || textContent.includes("phone") || textContent.includes("Phone") || textContent.includes("telephone") || textContent.includes("Telephone")){
+          highlightAction(element);
+          console.log("Forced action");
+        }
 
         //dark pattern or not 
         predictWithModel({ text: textContent }).then(result => {
@@ -123,7 +144,8 @@ chrome.runtime.onMessage.addListener((request) => {
 
     let e1 = document.getElementById("count_number_DarkPatterns");
     let e2 = document.getElementById("count_number_Price");
-    sendNumber(e1.value, e2.value);
+    let e3 = document.getElementById("count_number_Action");
+    sendNumber(e1.value, e2.value, e3.value);
   }
 }
 );

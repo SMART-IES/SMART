@@ -14,11 +14,13 @@ window.onload = function () {
         chrome.tabs.sendMessage(tabs[0].id, { message: "number" });
       });
     };
+
   };
   
 chrome.runtime.onMessage.addListener(function (request) {
     if (request.message === "update_number") {
       document.getElementsByClassName("numberDarkPatterns")[0].textContent = request.countDarkPatterns;
       document.getElementsByClassName("numberPrice")[0].textContent = request.countPrice;
+      document.getElementsByClassName("numberAction")[0].textContent = request.countAction;
     }
   });
