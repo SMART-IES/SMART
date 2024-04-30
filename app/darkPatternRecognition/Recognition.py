@@ -6,10 +6,14 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 import numpy as np
 
+#Model parameters
+dataset_path = 'dataset.tsv'
+n_estimators = 1200 
+
 #function to create model
 def initialize_model():
     #get the training data
-    data = pd.read_csv('dataset.tsv', sep='\t')
+    data = pd.read_csv(dataset_path, sep='\t')
 
     #split data into training and testing subsets
     data.dropna(subset=['text'], inplace=True)
@@ -18,14 +22,14 @@ def initialize_model():
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
     #create random forest model, train it
-    modelRandomForest = make_pipeline(TfidfVectorizer(), RandomForestClassifier(n_estimators=1200, criterion="entropy", max_features=None, random_state=42))
+    modelRandomForest = make_pipeline(TfidfVectorizer(), RandomForestClassifier(n_estimators=n_estimators, criterion="entropy", max_features=None, random_state=42))
     modelRandomForest.fit(X_train, y_train)
 
     #return the trained model
     return modelRandomForest
 
 def initialize_model_category(label_encoder):
-    data = pd.read_csv('dataset.tsv', sep='\t')
+    data = pd.read_csv(dataset_path, sep='\t')
 
     # Drop rows with missing values in 'text' and 'Pattern Category' columns
     data.dropna(subset=['text', 'Pattern Category'], inplace=True)
@@ -42,7 +46,7 @@ def initialize_model_category(label_encoder):
     X_train, X_test, y_train, y_test, z_train, z_test = train_test_split(x, y, z_encoded, test_size=0.2, random_state=42)
 
     # Initialize the model with provided parameters
-    modelRandomForest = make_pipeline(TfidfVectorizer(), RandomForestClassifier(n_estimators=1200, criterion="entropy", max_features=None, random_state=42))
+    modelRandomForest = make_pipeline(TfidfVectorizer(), RandomForestClassifier(n_estimators=n_estimators, criterion="entropy", max_features=None, random_state=42))
     
     # Train the model
     modelRandomForest.fit(X_train, z_train)
@@ -51,7 +55,7 @@ def initialize_model_category(label_encoder):
     return modelRandomForest
 
 def initialize_category_encoder():
-    data = pd.read_csv('dataset.tsv', sep='\t')
+    data = pd.read_csv(dataset_path, sep='\t')
 
     # Drop rows with missing values in 'text' and 'Pattern Category' columns
     data.dropna(subset=['text', 'Pattern Category'], inplace=True)
