@@ -90,10 +90,7 @@ function darkPatternIdentification() {
 
       if (textContent.length > 0) {
         allTexts.push(textContent);
-        // prix barre
 
-
-        //dark pattern or not 
         // Create a Promise for each prediction
         const predictionPromise = predictWithModel({ text: textContent }).then(result => {
           //(display of process on consol)
