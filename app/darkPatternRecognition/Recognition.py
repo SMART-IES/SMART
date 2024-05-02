@@ -5,9 +5,10 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 import numpy as np
+from sklearn.metrics import accuracy_score
 
 #Model parameters
-n_estimators = 1200 
+n_estimators = 150 
 
 #function to create model
 def initialize_model(dataset_path):
@@ -18,11 +19,20 @@ def initialize_model(dataset_path):
     data.dropna(subset=['text'], inplace=True)
     x = data['text']
     y = data['label']
-    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
     #create random forest model, train it
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+
     modelRandomForest = make_pipeline(TfidfVectorizer(), RandomForestClassifier(n_estimators=n_estimators, criterion="entropy", max_features=None, random_state=42))
     modelRandomForest.fit(X_train, y_train)
+
+    ## evaluate the accuracy
+    ## predictions = modelRandomForest.predict(X_test)
+
+    # evaluate the accuracy
+    ## accuracy = accuracy_score(y_test, predictions)
+    ## print(f"Accuracy: {accuracy}")
+
 
     #return the trained model
     return modelRandomForest
@@ -82,4 +92,8 @@ def decode_labels(label_encoder, encoded_labels):
     decoded_labels_list = decoded_labels.tolist()
     
     return decoded_labels_list
+
+dataset_path_fr = "dataset_français.tsv"
+
+modelRandomForest_fr = initialize_model(dataset_path_fr)
 
