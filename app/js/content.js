@@ -20,11 +20,11 @@ async function predictWithModel(data) {
 
 //---Highligh text elements---// 
 function highlightTextElements(element) {
-  console.log("7")
+
   element.style.backgroundColor = 'yellow';
   element.style.borderColor = 'black';
   element.style.borderWidth = '2px';
-  console.log("8")
+
   let e = document.getElementById("count_number_DarkPatterns");
   e.value++;
 }
@@ -125,29 +125,21 @@ async function darkPatternIdentification() {
     }
   });
 
-  console.log(elementsArray)
   // Send array of element details to server
   const response = await predictWithModel({ texts: elementsArray });
 
-  console.log(response)
   // Process the response
   response.forEach((result, index) => {
     element = elementsSelectorArray[index];
     elementType = elementsArray[index].tag;
 
-    console.log(element)
-    console.log("1")
     let category = result.category[0];
-    console.log("2")
     let prediction = result.prediction;
-    console.log("3")
     
     if (prediction === "1") {
-      console.log("4")
       if (category.length > 0 && category === "Not Dark Pattern") {
         category = "Failed to categorize";
       }
-      console.log("5")
       console.log(`Balise: ${elementType}, Texte: "${elementsArray[index].text}", Résultat de la prédiction: ${prediction}, Catégorie: ${category}`);
       
       highlightTextElements(element);
