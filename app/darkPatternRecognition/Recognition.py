@@ -105,15 +105,26 @@ def detect(text):
     except:
         return "en"
 
-def predictDarkPattern(text):
-    # Initialize the model
-    category_encoder_en = initialize_category_encoder(dataset_path_en)
-    modelRandomForest_en = initialize_model(dataset_path_en)
-    modelRandomForestCategory_en = initialize_model_category(category_encoder_en, dataset_path_en)
+def initialize_models():
+    global modelRandomForest_en
+    global modelRandomForest_fr
+    global modelRandomForestCategory_en
+    global modelRandomForestCategory_fr
+    global category_encoder_en
+    global category_encoder_fr
 
-    category_encoder_fr = initialize_category_encoder(dataset_path_fr)
+    #initialize the models
+    modelRandomForest_en = initialize_model(dataset_path_en)
     modelRandomForest_fr = initialize_model(dataset_path_fr)
+
+    category_encoder_en = initialize_category_encoder(dataset_path_en)
+    category_encoder_fr = initialize_category_encoder(dataset_path_fr)
+
+    modelRandomForestCategory_en = initialize_model_category(category_encoder_en, dataset_path_en)
     modelRandomForestCategory_fr = initialize_model_category(category_encoder_fr, dataset_path_fr)
+
+def predictDarkPattern(text):
+
 
     #Detect language and translate to English
     lang = detect(text)
