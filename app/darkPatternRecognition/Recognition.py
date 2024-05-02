@@ -123,22 +123,28 @@ def initialize_models():
     modelRandomForestCategory_en = initialize_model_category(category_encoder_en, dataset_path_en)
     modelRandomForestCategory_fr = initialize_model_category(category_encoder_fr, dataset_path_fr)
 
-def predictDarkPattern(text):
+def predictDarkPattern(text_elements):
+    results = []
+    for text_element in text_elements['texts']:
+        text = text_element['text']
+        tag = text_element['tag']
+        
+        lang = detect(text)
+        if lang == "fr":
+            prediction = modelRandomForest_fr.predict([text])[0] 
+            prediction_str = str(prediction)  
 
+            prediction_category = modelRandomForestCategory_fr.predict([text])[0] 
+            prediction_category_decoded = decode_labels(category_encoder_fr, prediction_category)
 
-    #Detect language and translate to English
-    lang = detect(text)
-    if lang == "fr":
-        prediction = modelRandomForest_fr.predict([text])[0] 
-        prediction_str = str(prediction)  
+            results.append({'prediction': prediction_str, 'category': prediction_category_decoded})
+        else:
+            prediction = modelRandomForest_en.predict([text])[0] 
+            prediction_str = str(prediction)  
 
-        prediction_category = modelRandomForestCategory_fr.predict([text])[0] 
-        prediction_category_decoded = decode_labels(category_encoder_fr, prediction_category)
-        return jsonify({'prediction': prediction_str, 'category': prediction_category_decoded})
-    else:
-        prediction = modelRandomForest_en.predict([text])[0] 
-        prediction_str = str(prediction)  
+            prediction_category = modelRandomForestCategory_en.predict([text])[0] 
+            prediction_category_decoded = decode_labels(category_encoder_en, prediction_category)
 
-        prediction_category = modelRandomForestCategory_en.predict([text])[0] 
-        prediction_category_decoded = decode_labels(category_encoder_en, prediction_category)
-        return jsonify({'prediction': prediction_str, 'category': prediction_category_decoded})
+            results.append({'prediction': prediction_str, 'category': prediction_category_decoded})
+
+    return results

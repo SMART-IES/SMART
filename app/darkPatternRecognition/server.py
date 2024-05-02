@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from Recognition import predictDarkPattern, initialize_models
 
@@ -12,7 +12,11 @@ initialize_models()
 @app.route('/predict', methods=['POST'])
 def predict():
     data = request.json  
-    return predictDarkPattern(data["text"])
+    print("---------")
+   
+    result = predictDarkPattern(data)  # Assuming data is the array of text elements
+    print("---------")
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(port=5000) 
