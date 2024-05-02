@@ -16,11 +16,18 @@ Dark Pattern definition : "a user interface that has been carefully crafted to t
 Inform clearly and precisely the users about the dark patterns present during their internet browsing
 
 ## Requirements
+-Dataset dark patterns and their category
+-Dataset text recognition
 
 ## Material
+-Install JupyterNotebook, Flask, flask-cors, googletrans, langdetect, postman (optional to test API) 
 
--Install JupyterNotebook, Flask, flask-cors, postman (optional to test API) 
+## How to use
 -Run server with command : python3 server.py
+-In Google Chrome, click on Manage extensions, and then click on the Developer mode in the upper right corner of the web page
+-Now click on the load unpacked button in the upper left corner, select the path of the folder app
+-When using this plugin, click on the button "Analyze site", and wait for the result
+-Click on the button "Get Number" to get the number of dark patterns
 
 ## Models for OCR
 - EAST : https://github.com/argman/EAST

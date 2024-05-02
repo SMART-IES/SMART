@@ -5,9 +5,15 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 import numpy as np
+from flask import jsonify
+from langdetect import detect
 
 #Model parameters
-n_estimators = 1200 
+n_estimators = 150 
+
+# dataset
+dataset_path_en = "dataset.tsv"
+dataset_path_fr = "dataset_français.tsv"
 
 #function to create model
 def initialize_model(dataset_path):
@@ -18,11 +24,20 @@ def initialize_model(dataset_path):
     data.dropna(subset=['text'], inplace=True)
     x = data['text']
     y = data['label']
-    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
     #create random forest model, train it
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+
     modelRandomForest = make_pipeline(TfidfVectorizer(), RandomForestClassifier(n_estimators=n_estimators, criterion="entropy", max_features=None, random_state=42))
     modelRandomForest.fit(X_train, y_train)
+
+    ## evaluate the accuracy
+    ## predictions = modelRandomForest.predict(X_test)
+
+    # evaluate the accuracy
+    ## accuracy = accuracy_score(y_test, predictions)
+    ## print(f"Accuracy: {accuracy}")
+
 
     #return the trained model
     return modelRandomForest
@@ -83,3 +98,53 @@ def decode_labels(label_encoder, encoded_labels):
     
     return decoded_labels_list
 
+def detect(text):
+    try:
+        lang = detect(text)
+        return lang
+    except:
+        return "en"
+
+def initialize_models():
+    global modelRandomForest_en
+    global modelRandomForest_fr
+    global modelRandomForestCategory_en
+    global modelRandomForestCategory_fr
+    global category_encoder_en
+    global category_encoder_fr
+
+    #initialize the models
+    modelRandomForest_en = initialize_model(dataset_path_en)
+    modelRandomForest_fr = initialize_model(dataset_path_fr)
+
+    category_encoder_en = initialize_category_encoder(dataset_path_en)
+    category_encoder_fr = initialize_category_encoder(dataset_path_fr)
+
+    modelRandomForestCategory_en = initialize_model_category(category_encoder_en, dataset_path_en)
+    modelRandomForestCategory_fr = initialize_model_category(category_encoder_fr, dataset_path_fr)
+
+def predictDarkPattern(text_elements):
+    results = []
+    for text_element in text_elements['texts']:
+        text = text_element['text']
+        tag = text_element['tag']
+        
+        lang = detect(text)
+        if lang == "fr":
+            prediction = modelRandomForest_fr.predict([text])[0] 
+            prediction_str = str(prediction)  
+
+            prediction_category = modelRandomForestCategory_fr.predict([text])[0] 
+            prediction_category_decoded = decode_labels(category_encoder_fr, prediction_category)
+
+            results.append({'prediction': prediction_str, 'category': prediction_category_decoded})
+        else:
+            prediction = modelRandomForest_en.predict([text])[0] 
+            prediction_str = str(prediction)  
+
+            prediction_category = modelRandomForestCategory_en.predict([text])[0] 
+            prediction_category_decoded = decode_labels(category_encoder_en, prediction_category)
+
+            results.append({'prediction': prediction_str, 'category': prediction_category_decoded})
+
+    return results

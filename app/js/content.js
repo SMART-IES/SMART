@@ -15,14 +15,16 @@ async function predictWithModel(data) {
     body: JSON.stringify(data)
   });
   const result = await response.json();
-  return { prediction: result.prediction, category: result.category };
+  return result;
 }
+
 
 //---Highligh text elements---// 
 function highlightTextElements(element, category) {
   element.style.backgroundColor = 'yellow';
   element.style.borderColor = 'black';
   element.style.borderWidth = '2px';
+
   let e = document.getElementById("count_number_DarkPatterns");
   e.value++;
   console.log("category ", category);
@@ -41,19 +43,18 @@ function highlightprice(element) {
 }
 
 function highlightAction(element) {
-  element.style.backgroundColor = 'green';
-  element.style.borderColor = 'black';
-  element.style.borderWidth = '2px';
-  let e = document.getElementById("count_number_Action");
-  e.value++;
+  if (element && element.id === "count_number_Action") {
+    element.style.backgroundColor = 'green';
+    element.style.borderColor = 'black';
+    element.style.borderWidth = '2px';
+    element.value++;
+  }
 }
 
-function darkPatternIdentification() {
+
+async function darkPatternIdentification() {
   let textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, div, li, td, a, label');
   let allTexts = [];
-
-  // Create a Promise that resolves when all predictions are complete
-  const predictionPromises = [];
 
   if (!document.getElementById("count_number_DarkPatterns")) {
     let g = document.createElement("div");
@@ -91,20 +92,6 @@ function darkPatternIdentification() {
     e.value = 0;
   }
 
-  if (!document.getElementById("count_number_DarkPatterns")) {
-    let g = document.createElement("div");
-    g.id = "count_number_DarkPatterns";
-    g.value = 0;
-    g.style.opacity = 0;
-    g.style.position = "fixed";
-    document.body.appendChild(g);
-  } else {
-    let e = document.getElementById("count_number_DarkPatterns");
-    e.value = 0;
-  }
-
-  // -----------------------------------------
-  
   if (!document.getElementById("count_urgency")) {
     let f = document.getElementById("urgency"); 
     let g = document.createElement("div");
@@ -117,11 +104,13 @@ function darkPatternIdentification() {
     let e = document.getElementById("count_urgency");
     e.value = 0;
   }
-  // ------------------------
 
-  //recup all elements 
+
+  // Create arrays to store element details
+  let elementsArray = [];
+  let elementsSelectorArray = [];
+
   textElements.forEach(element => {
-
     if (element.className.includes("strike") || element.style.textDecoration.includes("line-through")) {
       console.log("Prix barré");
       highlightprice(element);
@@ -142,41 +131,45 @@ function darkPatternIdentification() {
       if (textContent.length > 0) {
         allTexts.push(textContent);
 
-        if(textContent.includes("email") || textContent.includes("Email") || textContent.includes("e-mail") || textContent.includes("E-mail") || textContent.includes("mail") || textContent.includes("Mail") || textContent.includes("contact") || textContent.includes("Contact") || textContent.includes("phone") || textContent.includes("Phone") || textContent.includes("telephone") || textContent.includes("Telephone") || textContent.includes("Téléphone") || textContent.includes("téléphone")){
+        if (textContent.includes("email") || textContent.includes("Email") || textContent.includes("e-mail") || textContent.includes("E-mail") || textContent.includes("mail") || textContent.includes("Mail") || textContent.includes("contact") || textContent.includes("Contact") || textContent.includes("phone") || textContent.includes("Phone") || textContent.includes("telephone") || textContent.includes("Telephone") || textContent.includes("Téléphone") || textContent.includes("téléphone")) {
           highlightAction(element);
           console.log("Forced action");
         }
 
-        //dark pattern or not 
-        // Create a Promise for each prediction
-        const predictionPromise = predictWithModel({ text: textContent }).then(result => {
-          //(display of process on consol)
-          console.log(`Balise: ${elementType}, Texte: "${textContent}", Résultat de la prédiction: ${result.prediction}`);
-          if (result.prediction === "1") {
-            if (result.category.length > 0 && result.category[0] === "Not Dark Pattern") {
-              result.category = "Failed to categorize"
-            }
-            //highlight if yes
-            console.log("surligné");
-            console.log(`Balise: ${elementType}, Texte: "${textContent}", Résultat de la prédiction: ${result.prediction}, Catégorie: ${result.category}`);
-
-            highlightTextElements(element, result.category[0])
-          }
-        });
-        predictionPromises.push(predictionPromise);
+        // Store element details
+        elementsArray.push({ text: textContent, tag: elementType });
+        elementsSelectorArray.push(element)
       }
+    }
+  });
+
+  // Send array of element details to server
+  const response = await predictWithModel({ texts: elementsArray });
+
+  // Process the response
+  response.forEach((result, index) => {
+    element = elementsSelectorArray[index];
+    elementType = elementsArray[index].tag;
+
+    let category = result.category[0];
+    let prediction = result.prediction;
+    
+    if (prediction === "1") {
+      if (category.length > 0 && category === "Not Dark Pattern") {
+        category = "Failed to categorize";
+      }
+      console.log(`Balise: ${elementType}, Texte: "${elementsArray[index].text}", Résultat de la prédiction: ${prediction}, Catégorie: ${category}`);
+      
+      highlightTextElements(element);
     }
 
   });
 
-
-  return Promise.all(predictionPromises).then(() => {
-    
-    chrome.runtime.sendMessage({ message: "tasks_complete" });
-    console.log("End of detection");
-    return allTexts;
-});
+  // Update UI or send message to background script
+  chrome.runtime.sendMessage({ message: "tasks_complete" });
+  console.log("End of detection");
 }
+
 
 //---When analyze button pressed---// 
 chrome.runtime.onMessage.addListener((request) => {
@@ -193,7 +186,7 @@ chrome.runtime.onMessage.addListener((request) => {
     let e2 = document.getElementById("count_number_Price");
     let e3 = document.getElementById("count_number_Action");
     let e4 = document.getElementById("count_urgency");
-    sendNumber(e1.value, e2.value, e3.value, cpt_urgency);//e4.value
+    sendNumber(e1.value, e2.value, e3.value, e4.value);
   }
 }
 );

@@ -98,5 +98,5 @@ chrome.runtime.onMessage.addListener(function (request) {
 });
 
 function info(){
-  var el = document.getElementById();
+  //var el = document.getElementById();
 }
