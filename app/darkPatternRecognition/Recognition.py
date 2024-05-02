@@ -5,10 +5,15 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 import numpy as np
-from sklearn.metrics import accuracy_score
+from flask import jsonify
+from langdetect import detect
 
 #Model parameters
 n_estimators = 150 
+
+# dataset
+dataset_path_en = "dataset.tsv"
+dataset_path_fr = "dataset_français.tsv"
 
 #function to create model
 def initialize_model(dataset_path):
@@ -93,7 +98,36 @@ def decode_labels(label_encoder, encoded_labels):
     
     return decoded_labels_list
 
-dataset_path_fr = "dataset_français.tsv"
+def detect(text):
+    try:
+        lang = detect(text)
+        return lang
+    except:
+        return "en"
 
-modelRandomForest_fr = initialize_model(dataset_path_fr)
+def predictDarkPattern(text):
+    # Initialize the model
+    category_encoder_en = initialize_category_encoder(dataset_path_en)
+    modelRandomForest_en = initialize_model(dataset_path_en)
+    modelRandomForestCategory_en = initialize_model_category(category_encoder_en, dataset_path_en)
 
+    category_encoder_fr = initialize_category_encoder(dataset_path_fr)
+    modelRandomForest_fr = initialize_model(dataset_path_fr)
+    modelRandomForestCategory_fr = initialize_model_category(category_encoder_fr, dataset_path_fr)
+
+    #Detect language and translate to English
+    lang = detect(text)
+    if lang == "fr":
+        prediction = modelRandomForest_fr.predict([text])[0] 
+        prediction_str = str(prediction)  
+
+        prediction_category = modelRandomForestCategory_fr.predict([text])[0] 
+        prediction_category_decoded = decode_labels(category_encoder_fr, prediction_category)
+        return jsonify({'prediction': prediction_str, 'category': prediction_category_decoded})
+    else:
+        prediction = modelRandomForest_en.predict([text])[0] 
+        prediction_str = str(prediction)  
+
+        prediction_category = modelRandomForestCategory_en.predict([text])[0] 
+        prediction_category_decoded = decode_labels(category_encoder_en, prediction_category)
+        return jsonify({'prediction': prediction_str, 'category': prediction_category_decoded})
