@@ -1,6 +1,7 @@
 
+var cpt_urgency = 0;
 
-function sendNumber(countDarkPatterns, countPrice, countAction) {
+function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency) {
   chrome.runtime.sendMessage({ message: "update_number", countDarkPatterns: countDarkPatterns, countPrice: countPrice, countAction: countAction});
 }
 
@@ -18,12 +19,16 @@ async function predictWithModel(data) {
 }
 
 //---Highligh text elements---// 
-function highlightTextElements(element) {
+function highlightTextElements(element, category) {
   element.style.backgroundColor = 'yellow';
   element.style.borderColor = 'black';
   element.style.borderWidth = '2px';
   let e = document.getElementById("count_number_DarkPatterns");
   e.value++;
+  console.log("category ", category);
+  if (category ==='Urgency') {
+    cpt_urgency++;
+  }
 }
 
 //---Highligh price elements---// 
@@ -86,6 +91,34 @@ function darkPatternIdentification() {
     e.value = 0;
   }
 
+  if (!document.getElementById("count_number_DarkPatterns")) {
+    let g = document.createElement("div");
+    g.id = "count_number_DarkPatterns";
+    g.value = 0;
+    g.style.opacity = 0;
+    g.style.position = "fixed";
+    document.body.appendChild(g);
+  } else {
+    let e = document.getElementById("count_number_DarkPatterns");
+    e.value = 0;
+  }
+
+  // -----------------------------------------
+  
+  if (!document.getElementById("count_urgency")) {
+    let f = document.getElementById("urgency"); 
+    let g = document.createElement("div");
+    g.id = "count_urgency";
+    g.value = 0;
+    g.style.opacity = 0;
+    g.style.position = "fixed";
+    document.body.appendChild(g);
+  } else {
+    let e = document.getElementById("count_urgency");
+    e.value = 0;
+  }
+  // ------------------------
+
   //recup all elements 
   textElements.forEach(element => {
 
@@ -127,7 +160,7 @@ function darkPatternIdentification() {
             console.log("surligné");
             console.log(`Balise: ${elementType}, Texte: "${textContent}", Résultat de la prédiction: ${result.prediction}, Catégorie: ${result.category}`);
 
-            highlightTextElements(element)
+            highlightTextElements(element, result.category[0])
           }
         });
         predictionPromises.push(predictionPromise);
@@ -159,7 +192,8 @@ chrome.runtime.onMessage.addListener((request) => {
     let e1 = document.getElementById("count_number_DarkPatterns");
     let e2 = document.getElementById("count_number_Price");
     let e3 = document.getElementById("count_number_Action");
-    sendNumber(e1.value, e2.value, e3.value);
+    let e4 = document.getElementById("count_urgency");
+    sendNumber(e1.value, e2.value, e3.value, cpt_urgency);//e4.value
   }
 }
 );
