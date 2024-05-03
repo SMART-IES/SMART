@@ -64,7 +64,7 @@ window.onload = function () {
       
 
       chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { message: "analyze_site" });
+        chrome.tabs.sendMessage(tabs[0].id, { message: "analyze_site", url: tabs[0].url });
       });
     };
 

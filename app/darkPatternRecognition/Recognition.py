@@ -14,6 +14,7 @@ n_estimators = 150
 # dataset
 dataset_path_en = "dataset.tsv"
 dataset_path_fr = "dataset_français.tsv"
+url_path = "url.csv"
 
 #function to create model
 def initialize_model(dataset_path):
@@ -142,13 +143,29 @@ def initialize_models():
     modelRandomForestCategory_en = initialize_model_category(category_encoder_en, dataset_path_en)
     modelRandomForestCategory_fr = initialize_model_category(category_encoder_fr, dataset_path_fr)
 
-def predictDarkPattern(text_elements):
+def predictDarkPattern(text_elements, url):
     results = []
+    # add in file url.csv the url and number of elements
+    data = pd.read_csv(url_path, sep=',')
+    score = 0
+      
     for text_element in text_elements['texts']:
         text = text_element['text']
         tag = text_element['tag']
-        
+        result = checkDarkPattern(text)
+        if result['prediction'] == '1':
+            score += 1
         results.append(checkDarkPattern(text))
+
+    if data['url'].str.contains(url).any():
+        url_index = data[data['url'] == url].index
+        data.loc[url_index, 'score'] = score
+        data.to_csv(url_path, sep=',', index=False)
+
+    else:
+        new_row = pd.DataFrame({'url': [url], 'score': [score]})
+        data = pd.concat([data, new_row], ignore_index=True)
+        data.to_csv(url_path, sep=',', index=False)
 
     return results
 

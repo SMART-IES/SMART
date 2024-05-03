@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from Recognition import predictDarkPattern, initialize_models, checkDarkPattern
+from urllib.parse import urlparse
 
 #---API for Prediction---
 app = Flask(__name__)
@@ -11,10 +12,17 @@ initialize_models()
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    data = request.json  
+    request_data = request.json
+    
+    # Separate data and url from request JSON
+    url = request_data['url']
+    # get the hostname from the url
+    parsed_url = urlparse(url)
+    hostname = parsed_url.hostname
+
     print("---------")
    
-    result = predictDarkPattern(data)  # Assuming data is the array of text elements
+    result = predictDarkPattern(request_data, hostname)  # Assuming data is the array of text elements
     print("---------")
     return jsonify(result)
 

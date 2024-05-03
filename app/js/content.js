@@ -22,20 +22,24 @@ function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, co
 }
 
 //---Request on AI python API server.py---// 
-async function predictWithModel(data) {
+async function predictWithModel(data, url) {
+  const requestData = {
+    data: data,
+    url: url
+  };
   const response = await fetch('http://localhost:5000/predict', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(requestData)
   });
   const result = await response.json();
   return result;
 }
 
 async function checkDarkPattern(input) {
-  console.log("input : ", input);
+  
   const response = await fetch('http://localhost:5000/check', {
     method: 'POST',
     headers: {
@@ -108,7 +112,7 @@ function highlightAction(element) {
 }
 
 
-async function darkPatternIdentification() {
+async function darkPatternIdentification(url) {
   let textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, div, li, td, a, label');
   let allTexts = [];
 
@@ -203,7 +207,7 @@ async function darkPatternIdentification() {
   });
 
   // Send array of element details to server
-  const response = await predictWithModel({ texts: elementsArray });
+  const response = await predictWithModel({ texts: elementsArray, url: url});
 
   // Process the response
   response.forEach((result, index) => {
@@ -245,7 +249,7 @@ chrome.runtime.onMessage.addListener((request) => {
     cpt_scarcity = 0;
     cpt_misdirection = 0;
     cpt_social = 0;
-    darkPatternIdentification()
+    darkPatternIdentification(request.url)
   }
 });
 
