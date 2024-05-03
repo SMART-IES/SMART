@@ -2,4 +2,5 @@
 *.pb
 *.pyc
 *.keras
-**/*set
+*/dataset
+*/testset
