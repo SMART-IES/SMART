@@ -97,7 +97,7 @@ def decode_labels(label_encoder, encoded_labels):
     
     return decoded_labels_list
 
-def detect(text):
+def detect_lang(text):
     try:
         lang = detect(text)
         return lang
@@ -105,7 +105,7 @@ def detect(text):
         return "en"
 
 def checkDarkPattern(input):
-    lang = detect(input)
+    lang = detect_lang(input)
     if lang == "en":
         prediction = modelRandomForest_en.predict([input])[0] 
         prediction_str = str(prediction)  
