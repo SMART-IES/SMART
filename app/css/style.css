@@ -27,12 +27,12 @@
 
 @font-face {
   font-family: "Asap";
-  src: url(../popup/static_asap/Asap_Condensed-Regular.ttf);
+  src: url("../popup/asap/Asap_SemiCondensed-Regular.ttf");
 }
 
 @font-face {
   font-family: "Asul";
-  src: url(../popup/asul/Asul-Regular.ttf);
+  src: url("../popup/asul/Asul-Regular.ttf");
 }
 
 .text-title {
@@ -99,7 +99,7 @@
   color:var(--text-color);
   text-align: center;
   border-radius: 10px;
-  /* height: 48px; */
+  margin-top: 10px;
   background-color: var(--primary-violet);
   justify-content: center;
 }
@@ -138,9 +138,9 @@
 }
 
 .button-container button {
-  display: inline-block; /* Display buttons inline */
+  /*display: inline-block; /* Display buttons inline */
   margin: 5px;
-  position: relative;
+  /* position: relative; */
   width: 140px;
   height: 48px;
 }

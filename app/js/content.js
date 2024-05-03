@@ -78,7 +78,7 @@ function highlightTextElements(element, category) {
 
 //---Highligh price elements---// 
 function highlightprice(element) {
-  element.style.backgroundColor = 'red';
+  element.style.backgroundColor = "#FC6969";
   element.style.borderColor = 'black';
   element.style.borderWidth = '2px';
   let e = document.getElementById("count_number_Price");
@@ -149,8 +149,12 @@ async function darkPatternIdentification() {
 
   // -------------------------------------------------------------
   // Griser page
-  let imgs = document.images;
-  //forEach
+  var images = document.getElementsByTagName('img');
+  for (var i = 0; i < images.length; i++) {
+      images[i].style.filter = 'grayscale(1)';
+  }
+  // Récup all balises
+  var nodes = document.getElementsByTagName("*"); // problème inclus les head, script et tout
 
 
   // Create arrays to store element details
@@ -215,18 +219,31 @@ async function darkPatternIdentification() {
   // Update UI or send message to background script
   chrome.runtime.sendMessage({ message: "tasks_complete" });
   console.log("End of detection");
+
+  // Send message to update number
+  let e1 = document.getElementById("count_number_DarkPatterns");
+  let e2 = document.getElementById("count_number_Price");
+  let e3 = document.getElementById("count_number_Action");
+  //let e4 = document.getElementById("count_urgency");
+  sendNumber(e1.value, e2.value, e3.value, (cpt_urgency + e2.value), cpt_obstruction, cpt_sneaking, cpt_scarcity, cpt_misdirection, cpt_social);
 }
 
 
 //---When analyze button pressed---// 
 chrome.runtime.onMessage.addListener((request) => {
   if (request.message === "analyze_site") {
+    cpt_urgency = 0;
+    cpt_obstruction = 0;
+    cpt_sneaking = 0;
+    cpt_scarcity = 0;
+    cpt_misdirection = 0;
+    cpt_social = 0;
     darkPatternIdentification()
   }
 });
 
 //---When get numbers button pressed---// 
-chrome.runtime.onMessage.addListener((request) => {
+/*chrome.runtime.onMessage.addListener((request) => {
   if (request.message === "number") {
 
     let e1 = document.getElementById("count_number_DarkPatterns");
@@ -236,7 +253,7 @@ chrome.runtime.onMessage.addListener((request) => {
     sendNumber(e1.value, e2.value, e3.value, cpt_urgency, cpt_obstruction, cpt_sneaking, cpt_scarcity, cpt_misdirection, cpt_social);//e4.value
   }
 }
-);
+);*/
 
 
 

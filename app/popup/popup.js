@@ -15,13 +15,18 @@ window.onload = function () {
       var divOuverture = document.getElementById("ouverture");
 
       // Remove all child elements
-      while (divOuverture.firstChild) {
+      /*while (divOuverture.firstChild) {
         divOuverture.removeChild(divOuverture.firstChild);
-      }
+      }*/
 
       //Hide buttons
       /*var button = document.getElementsByClassName("button-container")[0];
       button.style.display = none;*/
+      document.getElementsByClassName("modal-header")[0].style.display = "none";
+      document.getElementsByClassName("button-container")[0].style.display = "none";
+
+      document.getElementsByClassName("detection")[0].style.display = "block";
+    
 
       // Create a new image element for the loading GIF
       var loadingImage = document.createElement("img");
@@ -33,6 +38,7 @@ window.onload = function () {
 
       // Create div
       var divLogo = document.createElement("div");
+      divLogo.id = "divLogo";
       divLogo.style.display = 'flex';
       divLogo.style.justifyContent = 'center';
 
@@ -62,11 +68,11 @@ window.onload = function () {
       });
     };
 
-    document.getElementsByClassName("number-button")[0].onclick = function () {
+    /*document.getElementsByClassName("number-button")[0].onclick = function () {
       chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
         chrome.tabs.sendMessage(tabs[0].id, { message: "number" });
       });
-    };
+    };*/
 
     //-----------------------------------------------
     // Show darks patterns definitions
@@ -98,8 +104,13 @@ window.onload = function () {
       info("socialInfo");
     });
 
-    document.getElementById("closeIcon").addEventListener("click", function() {
+    document.getElementById("closeIcon").addEventListener("click", function() { // marche pas encore après exécution
       document.getElementsByClassName("detection")[0].style.display = "none";
+      document.getElementById("divLogo").style.display = "none";//nouvelle lanterne
+      document.getElementById("loading-image").style.display = "none"; //load
+
+      document.getElementsByClassName("modal-header")[0].style.display = "block";
+      document.getElementsByClassName("button-container")[0].style.display = "block";
     });
   };
   
@@ -109,13 +120,14 @@ window.onload = function () {
       document.getElementsByClassName("numberPrice")[0].textContent = request.countPrice;
       document.getElementsByClassName("numberAction")[0].textContent = request.countAction;
 
-      document.getElementsByClassName("count_forced_action")[0].textContent = request.countAction;
-      document.getElementsByClassName("count_urgency")[0].textContent = request.countUrgency;
-      document.getElementsByClassName("count_obstruction")[0].textContent = request.countObs;
-      document.getElementsByClassName("count_sneaking")[0].textContent = request.countSneak;
-      document.getElementsByClassName("count_scarcity")[0].textContent = request.countScar;
-      document.getElementsByClassName("count_misdirection")[0].textContent = request.countMisdir;
-      document.getElementsByClassName("count_social_proof")[0].textContent = request.countSocial;
+    // Remplir counts
+    document.getElementsByClassName("count_forced_action")[0].textContent = request.countAction;
+    document.getElementsByClassName("count_urgency")[0].textContent = request.countUrgency;
+    document.getElementsByClassName("count_obstruction")[0].textContent = request.countObs;
+    document.getElementsByClassName("count_sneaking")[0].textContent = request.countSneak;
+    document.getElementsByClassName("count_scarcity")[0].textContent = request.countScar;
+    document.getElementsByClassName("count_misdirection")[0].textContent = request.countMisdir;
+    document.getElementsByClassName("count_social_proof")[0].textContent = request.countSocial;
     
     }
   });
@@ -137,9 +149,8 @@ chrome.runtime.onMessage.addListener(function (request) {
         // Append the image just below the button
         loadingImage.parentNode.insertBefore(finishImage, loadingImage.nextSibling);
         loadingImage.parentNode.removeChild(loadingImage);
-    }
 
-    // Remplir counts
+    }
   }
 
 });
