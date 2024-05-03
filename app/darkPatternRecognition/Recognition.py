@@ -13,7 +13,7 @@ n_estimators = 150
 
 # dataset
 dataset_path_en = "dataset.tsv"
-dataset_path_fr = "dataset_français.tsv"
+dataset_path_fr = "datasetFrançais.tsv"
 
 #function to create model
 def initialize_model(dataset_path):
@@ -130,6 +130,7 @@ def predictDarkPattern(text_elements):
         tag = text_element['tag']
         
         lang = detect(text)
+        print(lang)
         if lang == "fr":
             prediction = modelRandomForest_fr.predict([text])[0] 
             prediction_str = str(prediction)  
