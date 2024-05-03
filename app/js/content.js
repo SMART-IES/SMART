@@ -191,11 +191,6 @@ async function darkPatternIdentification() {
       if (textContent.length > 0) {
         allTexts.push(textContent);
 
-        if (textContent.includes("email") || textContent.includes("Email") || textContent.includes("e-mail") || textContent.includes("E-mail") || textContent.includes("mail") || textContent.includes("Mail") || textContent.includes("contact") || textContent.includes("Contact") || textContent.includes("phone") || textContent.includes("Phone") || textContent.includes("telephone") || textContent.includes("Telephone") || textContent.includes("Téléphone") || textContent.includes("téléphone")) {
-          highlightAction(element);
-          console.log("Forced action");
-        }
-
         // Store element details
         elementsArray.push({ text: textContent, tag: elementType });
         elementsSelectorArray.push(element)

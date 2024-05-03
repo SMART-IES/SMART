@@ -118,8 +118,6 @@ window.onload = function () {
     if (request.message === "update_number") {
       document.getElementsByClassName("numberDarkPatterns")[0].textContent = request.countDarkPatterns;
       document.getElementsByClassName("numberPrice")[0].textContent = request.countPrice;
-      document.getElementsByClassName("numberAction")[0].textContent = request.countAction;
-
       document.getElementsByClassName("count_forced_action")[0].textContent = request.countAction;
       document.getElementsByClassName("count_urgency")[0].textContent = request.countUrgency;
       document.getElementsByClassName("count_obstruction")[0].textContent = request.countObs;
