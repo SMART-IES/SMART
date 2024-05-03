@@ -1,8 +1,24 @@
 
 var cpt_urgency = 0;
+var cpt_obstruction = 0;
+var cpt_sneaking = 0;
+var cpt_scarcity = 0;
+var cpt_misdirection = 0;
+var cpt_social = 0;
 
-function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency) {
-  chrome.runtime.sendMessage({ message: "update_number", countDarkPatterns: countDarkPatterns, countPrice: countPrice, countAction: countAction});
+
+function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, countObs, countSneak, countScar, countMisdir, countSocial) {
+  chrome.runtime.sendMessage({ message: "update_number", 
+  countDarkPatterns: countDarkPatterns, 
+  countPrice: countPrice, 
+  countAction: countAction, 
+  countUrgency: countUrgency,
+  countObs: countObs,
+  countSneak: countSneak,
+  countScar: countScar,
+  countMisdir: countMisdir,
+  countSocial: countSocial
+});
 }
 
 //---Request on AI python API server.py---// 
@@ -21,16 +37,43 @@ async function predictWithModel(data) {
 
 //---Highligh text elements---// 
 function highlightTextElements(element, category) {
-  element.style.backgroundColor = 'yellow';
+  //element.style.backgroundColor = 'yellow';
+  if (category === "Urgency") {
+    element.style.backgroundColor = "#FB9CFC";
+    cpt_urgency++;
+    console.log("cpt urgency : ", cpt_urgency);
+    let f = document.getElementById("count_urgency");
+    f.value++;
+    console.log("f value : ", f.value);
+  }
+  if (category === "Obstruction") {
+    element.style.backgroundColor = "#FCD69C";
+    cpt_obstruction++;
+  }
+  if (category === "Sneaking") {
+    element.style.backgroundColor = "#FCF99C";
+    cpt_sneaking++;
+  }
+  if (category === "Scarcity") {
+    element.style.backgroundColor = "#83C9FC";
+    cpt_scarcity++;
+  }
+  if (category === "Misdirection") {
+    element.style.backgroundColor = "#9583FC";
+    cpt_misdirection++;
+  }
+  if (category === "Social Proof") {
+    element.style.backgroundColor = "#FB9CFC";
+    cpt_social++;
+  }
+  
+
   element.style.borderColor = 'black';
   element.style.borderWidth = '2px';
 
   let e = document.getElementById("count_number_DarkPatterns");
   e.value++;
-  console.log("category ", category);
-  if (category ==='Urgency') {
-    cpt_urgency++;
-  }
+
 }
 
 //---Highligh price elements---// 
@@ -93,7 +136,6 @@ async function darkPatternIdentification() {
   }
 
   if (!document.getElementById("count_urgency")) {
-    let f = document.getElementById("urgency"); 
     let g = document.createElement("div");
     g.id = "count_urgency";
     g.value = 0;
@@ -104,6 +146,11 @@ async function darkPatternIdentification() {
     let e = document.getElementById("count_urgency");
     e.value = 0;
   }
+
+  // -------------------------------------------------------------
+  // Griser page
+  let imgs = document.images;
+  //forEach
 
 
   // Create arrays to store element details
@@ -160,7 +207,7 @@ async function darkPatternIdentification() {
       }
       console.log(`Balise: ${elementType}, Texte: "${elementsArray[index].text}", Résultat de la prédiction: ${prediction}, Catégorie: ${category}`);
       
-      highlightTextElements(element);
+      highlightTextElements(element, category);
     }
 
   });
@@ -186,7 +233,7 @@ chrome.runtime.onMessage.addListener((request) => {
     let e2 = document.getElementById("count_number_Price");
     let e3 = document.getElementById("count_number_Action");
     let e4 = document.getElementById("count_urgency");
-    sendNumber(e1.value, e2.value, e3.value, e4.value);
+    sendNumber(e1.value, e2.value, e3.value, cpt_urgency, cpt_obstruction, cpt_sneaking, cpt_scarcity, cpt_misdirection, cpt_social);//e4.value
   }
 }
 );

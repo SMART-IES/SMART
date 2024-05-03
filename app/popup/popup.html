@@ -30,31 +30,59 @@
 
         <div style="display: inline-flex;">
             <div class="text-subtitle">Detection</div>
-            <img src="close.png" alt="close icon" style="margin-left: 250px;">
+            <img id="closeIcon" src="close.png" alt="close icon" style="margin-left: 250px;" type="button">
         </div><br>
         
         <div class="container" style="background-color: var(--overlay-color);">
-            <button id="urgency" class="button-filled-text-only" type="button" style="background-color: var(--pink); display: inline-flex;" onclick="info()"> 
-                <span id="count_urgency" style="margin-right: 10px;">0</span> 
-                Urgency <img src="urgency.png" alt="logo urgency" style="margin-left: 200px;"> </button>
-            <button class="button-filled-text-only" type="button" style="background-color: var(--primary-orange);">
-                <span id="count_obstruction" style="margin-right: 10px;">0</span> 
-                Obstruction <img src="obstruction.png" alt="logo obstruction" style="margin-left: 140px;"> </button>
-            <button class="button-filled-text-only" type="button" style="background-color: var(--primary-yellow);">
-                <span id="count_sneaking" style="margin-right: 10px;">0</span> 
-                Sneaking <img src="sneaking.png" alt="logo sneaking" style="margin-left: 140px;"></button>
-            <button class="button-filled-text-only" type="button" style="background-color: var(--green);">
-                <span id="count_forced_action" style="margin-right: 10px;">0</span> 
-                Forced Action <img src="forced_action.png" alt="logo forced action" style="margin-left: 140px;"></button>
-            <button class="button-filled-text-only" type="button" style="background-color: var(--blue);">
-                <span id="count_scarcity" style="margin-right: 10px;">0</span> 
-                Scarcity <img src="scarcity.png" alt="logo scarcity" style="margin-left: 140px;"></button>
-            <button class="button-filled-text-only" type="button" style="background-color: var(--violet);">
-                <span id="count_misdirection" style="margin-right: 10px;">0</span> 
-                Misdirection <img src="misdirection.png" alt="logo misdirection" style="margin-left: 140px;"></button>
-            <button class="button-filled-text-only" type="button" style="background-color: var(--primary-pink);">
-                <span id="count_social_proof" style="margin-right: 10px;">0</span> 
-                Social Proof <img src="social_proof.png" alt="logo social_proof" style="margin-left: 140px;"></button><br>
+            <button id="urgency" class="button-filled-text-only" type="button" style="background-color: var(--pink);"> 
+                <div style="display: inline-flex;">
+                    <span class="count_urgency" style="margin-right: 10px;">0</span> 
+                    Urgency <img src="urgency.png" alt="logo urgency" style="margin-left: 200px;">
+                </div>
+                <div id="urgencyInfo" class="text-body" style="text-align: justify; display: none;"> Patterns imposant une date butoir pour une vente ou une promotion afin de cr&eacute;er un sentiment d'urgence chez l'utilisateur et acc&eacute;l&eacute;rer sa prise de d&eacute;cision et son passage &agrave; l'achat </div>
+            </button>
+            <button id="obstruction" class="button-filled-text-only" type="button" style="background-color: var(--primary-orange);">
+                <div style="display: inline-flex;">
+                    <span class="count_obstruction" style="margin-right: 10px;">0</span> 
+                    Obstruction <img src="obstruction.png" alt="logo obstruction" style="margin-left: 180px;">
+                </div>
+                <div id="obstructionInfo" class="text-body" style="text-align: justify; display: none;"> Patterns visant &agrave; rendre la r&eacute;alisation de certaines actions plus difficiles que n&eacute;cessaire afin de d&eacute;courager l'utilisateur de les mener &agrave; bien </div>
+            </button>
+            <button id="sneaking" class="button-filled-text-only" type="button" style="background-color: var(--primary-yellow);">
+                <div style="display: inline-flex;">
+                    <span class="count_sneaking" style="margin-right: 10px;">0</span> 
+                    Sneaking <img src="sneaking.png" alt="logo sneaking" style="margin-left: 190px;">
+                </div>
+                <div id="sneakingInfo" class="text-body" style="text-align: justify; display: none;"> Patterns cherchant &agrave; donner une fausse repr&eacute;sentation de l'action de l'utilisateur, &agrave; cacher ou retarder l'affichage d'une information &agrave; laquelle l'utilisateur s'opposerait si elle lui &eacute;tait amen&eacute;e de fa&ccedil;on transparente </div>
+            </button>
+            <button id="forced" class="button-filled-text-only" type="button" style="background-color: var(--green);">
+                <div style="display: inline-flex;">
+                    <span class="count_forced_action" style="margin-right: 10px;">0</span> 
+                    Forced Action <img src="forced_action.png" alt="logo forced action" style="margin-left: 160px;">
+                </div>
+                <div id="forcedInfo" class="text-body" style="text-align: justify; display: none;"> Patterns for&ccedil;ant l'utilisateur &agrave; r&eacute;aliser une action additionnelle afin de pouvoir terminer la t&acirc;che initiale de l'entreprise </div>
+            </button>
+            <button id="scarcity" class="button-filled-text-only" type="button" style="background-color: var(--blue);">
+                <div style="display: inline-flex;">
+                    <span class="count_scarcity" style="margin-right: 10px;">0</span> 
+                    Scarcity <img src="scarcity.png" alt="logo scarcity" style="margin-left: 190px;">
+                </div>
+                <div id="scarcityInfo" class="text-body" style="text-align: justify; display: none;"> Patterns signalant la quantit&eacute; limit&eacute;e ou la demande forte d'un produit afin d'augmenter sa valeur et d&eacute;sirabilit&eacute; per&ccedil;ue </div>
+            </button>
+            <button id="misdirection" class="button-filled-text-only" type="button" style="background-color: var(--violet);">
+                <div style="display: inline-flex;">
+                    <span class="count_misdirection" style="margin-right: 10px;">0</span> 
+                    Misdirection <img src="misdirection.png" alt="logo misdirection" style="margin-left: 160px;">
+                </div>
+                <div id="misdirectionInfo" class="text-body" style="text-align: justify; display: none;"> Patterns s'appuyant sur l'utilisation de visuels, d'&eacute;l&eacute;ments de langages ou de r&eacute;actions &eacute;motionnelles pour pousser les utilisateurs vers un choix plut&ocirc;t qu'un autre </div>
+            </button>
+            <button id="social" class="button-filled-text-only" type="button" style="background-color: var(--primary-pink);">
+                <div style="display: inline-flex;">
+                    <span class="count_social_proof" style="margin-right: 10px;">0</span> 
+                    Social Proof <img src="social_proof.png" alt="logo social_proof" style="margin-left: 160px;">
+                </div>
+                <div id="socialInfo" class="text-body" style="text-align: justify; display: none;"> Patterns s'appuyant sur la tendance conformiste des individus pour acc&eacute;l&eacute;rer la prise de d&eacute;cision et le passage &agrave; l'achat </div>
+            </button><br>
             
             <button class="number-button" type="button">GET NUMBER</button><br>
 

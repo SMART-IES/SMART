@@ -25,6 +25,16 @@
   --overlay-color: #ededed;
 }
 
+@font-face {
+  font-family: "Asap";
+  src: url(../popup/static_asap/Asap_Condensed-Regular.ttf);
+}
+
+@font-face {
+  font-family: "Asul";
+  src: url(../popup/asul/Asul-Regular.ttf);
+}
+
 .text-title {
   text-align: center;
   font-family: "Asap";
@@ -80,8 +90,8 @@
   }
   
 .button-filled-text-only {
-  /*padding-top: 12px;
-  /*padding-bottom: 16px;*/
+  padding-top: 12px;
+  padding-bottom: 12px;
   font-family: "Asap";
   font-size: 16px;
   line-height:24px;
@@ -89,7 +99,7 @@
   color:var(--text-color);
   text-align: center;
   border-radius: 10px;
-  height: 48px;
+  /* height: 48px; */
   background-color: var(--primary-violet);
   justify-content: center;
 }
@@ -125,10 +135,6 @@
 .button-outlined-text-only:active{
   background-color: var(--dark-violet);
   color:var(--overlay-color);
-}
-
-.button-container {
-  text-align: center;
 }
 
 .button-container button {
