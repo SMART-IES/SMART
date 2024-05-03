@@ -47,6 +47,18 @@ async function checkDarkPattern(input) {
   return result;
 }
 
+async function predictForcedAction(input) {
+  
+  const response = await fetch('http://localhost:5000/predictForcedAction', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(input)
+  });
+  const result = await response.json();
+  return result;
+}
 
 //---Highligh text elements---// 
 function highlightTextElements(element, category) {
@@ -109,9 +121,36 @@ function highlightAction(element) {
 
 
 async function darkPatternIdentification(url) {
-  let textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, div, li, td, a, label');
-  let allTexts = [];
+  init_counters();
 
+  makePageGrey();
+
+  await getTextPrediction(url);
+
+  updateContent();
+}
+
+function updateContent() {
+  // Update UI or send message to background script
+  chrome.runtime.sendMessage({ message: "tasks_complete" });
+  console.log("End of detection");
+
+  // Send message to update number
+  let e1 = document.getElementById("count_number_DarkPatterns");
+  let e2 = document.getElementById("count_number_Price");
+  let e3 = document.getElementById("count_number_Action");
+  //let e4 = document.getElementById("count_urgency");
+  sendNumber(e1.value, e2.value, e3.value, (cpt_urgency + e2.value), cpt_obstruction, cpt_sneaking, cpt_scarcity, cpt_misdirection, cpt_social);
+}
+
+function makePageGrey() {
+  var images = document.getElementsByTagName('img');
+  for (var i = 0; i < images.length; i++) {
+    images[i].style.filter = 'grayscale(1)';
+  }
+}
+
+function init_counters() {
   if (!document.getElementById("count_number_DarkPatterns")) {
     let g = document.createElement("div");
     g.id = "count_number_DarkPatterns";
@@ -159,18 +198,11 @@ async function darkPatternIdentification(url) {
     let e = document.getElementById("count_urgency");
     e.value = 0;
   }
+}
 
-  // -------------------------------------------------------------
-  // Griser page
-  var images = document.getElementsByTagName('img');
-  for (var i = 0; i < images.length; i++) {
-      images[i].style.filter = 'grayscale(1)';
-  }
-  // Récup all balises
-  var nodes = document.getElementsByTagName("*"); // problème inclus les head, script et tout
-
-
-  // Create arrays to store element details
+function scrapTextElements() {
+  let textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, div, li, td, a, label');
+  let allTexts = [];
   let elementsArray = [];
   let elementsSelectorArray = [];
 
@@ -197,44 +229,37 @@ async function darkPatternIdentification(url) {
 
         // Store element details
         elementsArray.push({ text: textContent, tag: elementType });
-        elementsSelectorArray.push(element)
+        elementsSelectorArray.push(element);
       }
     }
   });
+  return { elementsArray, elementsSelectorArray };
+}
 
-  // Send array of element details to server
-  const response = await predictWithModel({ texts: elementsArray, url: url});
+async function getTextPrediction(url) {
+  // Create arrays to store element details
+  let { elementsArray, elementsSelectorArray } = scrapTextElements();
+
+  // Send array of element details to server and retrieve response
+  const textResponse = await predictWithModel({ texts: elementsArray, url: url });
 
   // Process the response
-  response.forEach((result, index) => {
+  textResponse.forEach((result, index) => {
     element = elementsSelectorArray[index];
     elementType = elementsArray[index].tag;
     let category = result.category[0];
     let prediction = result.prediction;
-    
+
     if (prediction === "1") {
       if (category.length > 0 && category === "Not Dark Pattern") {
         category = "Failed to categorize";
       }
       console.log(`Balise: ${elementType}, Texte: "${elementsArray[index].text}", Résultat de la prédiction: ${prediction}, Catégorie: ${category}`);
-      
+
       highlightTextElements(element, category);
     }
-
   });
-
-  // Update UI or send message to background script
-  chrome.runtime.sendMessage({ message: "tasks_complete" });
-  console.log("End of detection");
-
-  // Send message to update number
-  let e1 = document.getElementById("count_number_DarkPatterns");
-  let e2 = document.getElementById("count_number_Price");
-  let e3 = document.getElementById("count_number_Action");
-  //let e4 = document.getElementById("count_urgency");
-  sendNumber(e1.value, e2.value, e3.value, (cpt_urgency + e2.value), cpt_obstruction, cpt_sneaking, cpt_scarcity, cpt_misdirection, cpt_social);
 }
-
 
 //---When analyze button pressed---// 
 chrome.runtime.onMessage.addListener((request) => {

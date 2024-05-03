@@ -1,2 +1,4 @@
 *.onnx
 *.pb
+*.pyc
+*.keras
