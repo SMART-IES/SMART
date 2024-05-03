@@ -22,17 +22,13 @@ function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, co
 }
 
 //---Request on AI python API server.py---// 
-async function predictWithModel(data, url) {
-  const requestData = {
-    data: data,
-    url: url
-  };
+async function predictWithModel(data) {
   const response = await fetch('http://localhost:5000/predict', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(requestData)
+    body: JSON.stringify(data)
   });
   const result = await response.json();
   return result;
