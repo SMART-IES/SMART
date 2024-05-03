@@ -34,6 +34,19 @@ async function predictWithModel(data) {
   return result;
 }
 
+async function checkDarkPattern(input) {
+  console.log("input : ", input);
+  const response = await fetch('http://localhost:5000/check', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(input)
+  });
+  const result = await response.json();
+  return result;
+}
+
 
 //---Highligh text elements---// 
 function highlightTextElements(element, category) {
@@ -197,7 +210,6 @@ async function darkPatternIdentification() {
   response.forEach((result, index) => {
     element = elementsSelectorArray[index];
     elementType = elementsArray[index].tag;
-
     let category = result.category[0];
     let prediction = result.prediction;
     
@@ -234,6 +246,17 @@ chrome.runtime.onMessage.addListener((request) => {
     let e3 = document.getElementById("count_number_Action");
     let e4 = document.getElementById("count_urgency");
     sendNumber(e1.value, e2.value, e3.value, cpt_urgency, cpt_obstruction, cpt_sneaking, cpt_scarcity, cpt_misdirection, cpt_social);//e4.value
+  }
+}
+);
+
+chrome.runtime.onMessage.addListener(async (request) => {
+  if (request.message === "check") {
+    console.log("request.input : ", request);
+    const result = await checkDarkPattern(request.input);
+
+    chrome.runtime.sendMessage({ message: "check_complete",  category: result.category, prediction: result.prediction});
+
   }
 }
 );
