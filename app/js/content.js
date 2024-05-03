@@ -34,6 +34,19 @@ async function predictWithModel(data) {
   return result;
 }
 
+async function checkDarkPattern(input) {
+  console.log("input : ", input);
+  const response = await fetch('http://localhost:5000/check', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(input)
+  });
+  const result = await response.json();
+  return result;
+}
+
 
 //---Highligh text elements---// 
 function highlightTextElements(element, category) {
@@ -182,11 +195,6 @@ async function darkPatternIdentification() {
       if (textContent.length > 0) {
         allTexts.push(textContent);
 
-        if (textContent.includes("email") || textContent.includes("Email") || textContent.includes("e-mail") || textContent.includes("E-mail") || textContent.includes("mail") || textContent.includes("Mail") || textContent.includes("contact") || textContent.includes("Contact") || textContent.includes("phone") || textContent.includes("Phone") || textContent.includes("telephone") || textContent.includes("Telephone") || textContent.includes("Téléphone") || textContent.includes("téléphone")) {
-          highlightAction(element);
-          console.log("Forced action");
-        }
-
         // Store element details
         elementsArray.push({ text: textContent, tag: elementType });
         elementsSelectorArray.push(element)
@@ -201,7 +209,6 @@ async function darkPatternIdentification() {
   response.forEach((result, index) => {
     element = elementsSelectorArray[index];
     elementType = elementsArray[index].tag;
-
     let category = result.category[0];
     let prediction = result.prediction;
     
@@ -254,6 +261,17 @@ chrome.runtime.onMessage.addListener((request) => {
   }
 }
 );*/
+
+chrome.runtime.onMessage.addListener(async (request) => {
+  if (request.message === "check") {
+    console.log("request.input : ", request);
+    const result = await checkDarkPattern(request.input);
+
+    chrome.runtime.sendMessage({ message: "check_complete",  category: result.category, prediction: result.prediction});
+
+  }
+}
+);
 
 
 

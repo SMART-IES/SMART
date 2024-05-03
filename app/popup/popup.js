@@ -70,9 +70,18 @@ window.onload = function () {
 
     /*document.getElementsByClassName("number-button")[0].onclick = function () {
       chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+        
         chrome.tabs.sendMessage(tabs[0].id, { message: "number" });
       });
     };*/
+
+    document.getElementsByClassName("check-button")[0].onclick = function () {
+      chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+        var input = document.getElementById("input").value;
+        chrome.tabs.sendMessage(tabs[0].id, { message: "check", input: input });
+      }
+      );
+    };
 
     //-----------------------------------------------
     // Show darks patterns definitions
@@ -113,6 +122,8 @@ window.onload = function () {
       document.getElementsByClassName("button-container")[0].style.display = "block";
     });
   };
+
+
   
   chrome.runtime.onMessage.addListener(function (request) {
     if (request.message === "update_number") {
@@ -153,6 +164,19 @@ chrome.runtime.onMessage.addListener(function (request) {
     }
   }
 
+});
+
+chrome.runtime.onMessage.addListener(function (request) {
+  if (request.message === "check_complete") {
+    var result = document.getElementById("result");
+    if(request.prediction === "1") {
+      result.style.color = "red";
+      result.textContent = "dark pattern :" + request.category;
+    } else {
+      result.style.color = "green";
+      result.textContent = "no dark pattern detected";
+    }
+  }
 });
 
 function info(elementId){

@@ -28,13 +28,12 @@ def initialize_model(dataset_path):
     #create random forest model, train it
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
-    modelRandomForest = make_pipeline(TfidfVectorizer(), RandomForestClassifier(n_estimators=n_estimators, criterion="entropy", max_features=None, random_state=42))
+    modelRandomForest = make_pipeline(TfidfVectorizer(), RandomForestClassifier(n_estimators=n_estimators, criterion="gini", max_features=None, random_state=42))
     modelRandomForest.fit(X_train, y_train)
 
     ## evaluate the accuracy
     ## predictions = modelRandomForest.predict(X_test)
 
-    # evaluate the accuracy
     ## accuracy = accuracy_score(y_test, predictions)
     ## print(f"Accuracy: {accuracy}")
 
@@ -98,12 +97,32 @@ def decode_labels(label_encoder, encoded_labels):
     
     return decoded_labels_list
 
-def detect(text):
+def detect_lang(text):
     try:
         lang = detect(text)
         return lang
     except:
         return "en"
+
+def checkDarkPattern(input):
+    lang = detect_lang(input)
+    if lang == "en":
+        prediction = modelRandomForest_en.predict([input])[0] 
+        prediction_str = str(prediction)  
+
+        prediction_category = modelRandomForestCategory_en.predict([input])[0] 
+        prediction_category_decoded = decode_labels(category_encoder_en, prediction_category)
+
+        return {'prediction': prediction_str, 'category': prediction_category_decoded}
+
+    else:
+        prediction = modelRandomForest_fr.predict([input])[0] 
+        prediction_str = str(prediction)  
+
+        prediction_category = modelRandomForestCategory_fr.predict([input])[0] 
+        prediction_category_decoded = decode_labels(category_encoder_fr, prediction_category)
+
+        return {'prediction': prediction_str, 'category': prediction_category_decoded}
 
 def initialize_models():
     global modelRandomForest_en
@@ -129,22 +148,9 @@ def predictDarkPattern(text_elements):
         text = text_element['text']
         tag = text_element['tag']
         
-        lang = detect(text)
-        if lang == "fr":
-            prediction = modelRandomForest_fr.predict([text])[0] 
-            prediction_str = str(prediction)  
-
-            prediction_category = modelRandomForestCategory_fr.predict([text])[0] 
-            prediction_category_decoded = decode_labels(category_encoder_fr, prediction_category)
-
-            results.append({'prediction': prediction_str, 'category': prediction_category_decoded})
-        else:
-            prediction = modelRandomForest_en.predict([text])[0] 
-            prediction_str = str(prediction)  
-
-            prediction_category = modelRandomForestCategory_en.predict([text])[0] 
-            prediction_category_decoded = decode_labels(category_encoder_en, prediction_category)
-
-            results.append({'prediction': prediction_str, 'category': prediction_category_decoded})
+        results.append(checkDarkPattern(text))
 
     return results
+
+
+
