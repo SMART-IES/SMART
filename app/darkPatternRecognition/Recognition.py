@@ -104,6 +104,26 @@ def detect(text):
     except:
         return "en"
 
+def checkDarkPattern(input):
+    lang = detect(input)
+    if lang == "en":
+        prediction = modelRandomForest_en.predict([input])[0] 
+        prediction_str = str(prediction)  
+
+        prediction_category = modelRandomForestCategory_en.predict([input])[0] 
+        prediction_category_decoded = decode_labels(category_encoder_en, prediction_category)
+
+        return {'prediction': prediction_str, 'category': prediction_category_decoded}
+
+    else:
+        prediction = modelRandomForest_fr.predict([input])[0] 
+        prediction_str = str(prediction)  
+
+        prediction_category = modelRandomForestCategory_fr.predict([input])[0] 
+        prediction_category_decoded = decode_labels(category_encoder_fr, prediction_category)
+
+        return {'prediction': prediction_str, 'category': prediction_category_decoded}
+
 def initialize_models():
     global modelRandomForest_en
     global modelRandomForest_fr
@@ -128,43 +148,9 @@ def predictDarkPattern(text_elements):
         text = text_element['text']
         tag = text_element['tag']
         
-        lang = detect(text)
-        if lang == "fr":
-            prediction = modelRandomForest_fr.predict([text])[0] 
-            prediction_str = str(prediction)  
-
-            prediction_category = modelRandomForestCategory_fr.predict([text])[0] 
-            prediction_category_decoded = decode_labels(category_encoder_fr, prediction_category)
-
-            results.append({'prediction': prediction_str, 'category': prediction_category_decoded})
-        else:
-            prediction = modelRandomForest_en.predict([text])[0] 
-            prediction_str = str(prediction)  
-
-            prediction_category = modelRandomForestCategory_en.predict([text])[0] 
-            prediction_category_decoded = decode_labels(category_encoder_en, prediction_category)
-
-            results.append({'prediction': prediction_str, 'category': prediction_category_decoded})
+        results.append(checkDarkPattern(text))
 
     return results
 
 
-def checkDarkPattern(input):
-    lang = detect(input)
-    if lang == "fr":
-        prediction = modelRandomForest_fr.predict([input])[0] 
-        prediction_str = str(prediction)  
-
-        prediction_category = modelRandomForestCategory_fr.predict([input])[0] 
-        prediction_category_decoded = decode_labels(category_encoder_fr, prediction_category)
-
-        return {'prediction': prediction_str, 'category': prediction_category_decoded}
-    else:
-        prediction = modelRandomForest_en.predict([input])[0] 
-        prediction_str = str(prediction)  
-
-        prediction_category = modelRandomForestCategory_en.predict([input])[0] 
-        prediction_category_decoded = decode_labels(category_encoder_en, prediction_category)
-
-        return {'prediction': prediction_str, 'category': prediction_category_decoded}
 
