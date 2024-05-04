@@ -1,17 +1,19 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from Text.Recognition import predictDarkPattern, initialize_models, checkDarkPattern
+from Text.Recognition import predictDarkPattern, initialize_text_models, checkDarkPattern
+from ForcedAction.Loadmodel import initialize_forced_action_classifier_model, predictForcedActionWithURL
 from urllib.parse import urlparse
 
 #---API for Prediction---
 app = Flask(__name__)
-CORS(app, resources={r"/predict": {"origins": "*"}, r"/check": {"origins": "*"}})
+CORS(app, resources={r"/predictText": {"origins": "*"}, r"/check": {"origins": "*"}, r"/predictForcedAction": {"origins": "*"}})
 
-# initialize text models
-initialize_models()
 
-@app.route('/predict', methods=['POST'])
-def predict():
+initialize_forced_action_classifier_model()
+initialize_text_models()
+
+@app.route('/predictText', methods=['POST'])
+def predictText():
     request_data = request.json
     
     # Separate data and url from request JSON
@@ -31,6 +33,11 @@ def check():
     result = checkDarkPattern(input)
     return jsonify(result)
 
+@app.route('/predictForcedAction', methods=['POST'])
+def predictForcedAction():
+    input = request.json
+    classe, probability = predictForcedActionWithURL(input)
+    return [classe, probability]
 
 if __name__ == '__main__':
     app.run(port=5000)

@@ -21,8 +21,9 @@ n_estimators = 150
 base_path = Path(__file__).parent
 dataset_en = "dataset.tsv"
 dataset_fr = "dataset_francais.tsv"
-url_path = "url.csv"
+base_url = "url.csv"
 
+url_path = (base_path / ("url.csv")).resolve()
 dataset_path_en = (base_path / ("../Text/" + dataset_en)).resolve()
 dataset_path_fr = (base_path / ("../Text/" + dataset_fr)).resolve()
 
@@ -147,7 +148,7 @@ def detect_lang(text):
     except:
         return "en"
 
-def initialize_models():
+def initialize_text_models():
     global modelRandomForest_en
     global modelRandomForest_fr
     global modelRandomForestCategory_en
@@ -167,6 +168,7 @@ def initialize_models():
 
 def checkDarkPattern(input):
     lang = detect_lang(input)
+
     if lang == "en":
         prediction = modelRandomForest_en.predict([input])[0] 
         prediction_str = str(prediction)  
