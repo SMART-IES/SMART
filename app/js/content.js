@@ -1,4 +1,3 @@
-
 var cpt_urgency = 0;
 var cpt_obstruction = 0;
 var cpt_sneaking = 0;
@@ -22,8 +21,8 @@ function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, co
 }
 
 //---Request on AI python API server.py---// 
-async function predictWithModel(data) {
-  const response = await fetch('http://localhost:5000/predict', {
+async function predictDPWithTextModel(data) {
+  const response = await fetch('http://localhost:5000/predictText', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -126,6 +125,8 @@ async function darkPatternIdentification(url) {
   makePageGrey();
 
   await getTextPrediction(url);
+
+  await getForcedActionPrediction(url);
 
   updateContent();
 }
@@ -241,7 +242,7 @@ async function getTextPrediction(url) {
   let { elementsArray, elementsSelectorArray } = scrapTextElements();
 
   // Send array of element details to server and retrieve response
-  const textResponse = await predictWithModel({ texts: elementsArray, url: url });
+  const textResponse = await predictDPWithTextModel({ texts: elementsArray, url: url });
 
   // Process the response
   textResponse.forEach((result, index) => {
@@ -259,6 +260,10 @@ async function getTextPrediction(url) {
       highlightTextElements(element, category);
     }
   });
+}
+
+async function getForcedActionPrediction(url){
+  const isThereForcedAction = await predictForcedAction(url);
 }
 
 //---When analyze button pressed---// 
