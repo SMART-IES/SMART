@@ -6,6 +6,14 @@ var cpt_scarcity = 0;
 var cpt_misdirection = 0;
 var cpt_social = 0;
 
+const darknessThreshold = 100;
+
+// Function to calculate brightness from RGB values
+function calculateBrightness(rgb) {
+    // Convert RGB values to brightness using the formula: (R * 299 + G * 587 + B * 114) / 1000
+    return (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
+}
+
 
 function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, countObs, countSneak, countScar, countMisdir, countSocial) {
   chrome.runtime.sendMessage({ message: "update_number", 
@@ -74,6 +82,7 @@ function highlightTextElements(element, category) {
   if (category === "Misdirection") {
     element.style.backgroundColor = "#9583FC";
     cpt_misdirection++;
+    console.log("misdirection");
   }
   if (category === "Social Proof") {
     element.style.backgroundColor = "#FB9CFC";
@@ -166,8 +175,29 @@ async function darkPatternIdentification() {
   for (var i = 0; i < images.length; i++) {
       images[i].style.filter = 'grayscale(1)';
   }
-  // Récup all balises
-  var nodes = document.getElementsByTagName("*"); // problème inclus les head, script et tout
+  // Les balises autres que les images
+  document.querySelectorAll('*').forEach(element => {
+      const computedColor = window.getComputedStyle(element).color;
+      const computedBgColor = window.getComputedStyle(element).backgroundColor;
+      const rgb = computedBgColor.match(/\d+/g).map(Number);
+
+      // Apply changes only if the background color is not dark
+      if (calculateBrightness(rgb) > darknessThreshold) {
+        // Check if the color is neither black nor white
+        if (computedColor !== 'rgb(0, 0, 0)' && computedColor !== 'rgb(255, 255, 255)') {
+            element.style.color = 'initial'; // Reset the color
+        }
+
+        // Check if the background color is neither black nor white
+        if (computedBgColor !== 'rgb(0, 0, 0)' && computedBgColor !== 'rgb(255, 255, 255)') {
+            if (computedColor !== 'rgb(255, 255, 255)') {
+                element.style.backgroundColor = 'initial'; // Reset the background color
+            }
+        }
+      }
+
+      element.style.borderColor = 'initial';
+  });
 
 
   // Create arrays to store element details
@@ -245,18 +275,18 @@ chrome.runtime.onMessage.addListener((request) => {
     cpt_scarcity = 0;
     cpt_misdirection = 0;
     cpt_social = 0;
-    darkPatternIdentification()
+    darkPatternIdentification();
   }
 });
 
 //---When get numbers button pressed---// 
 /*chrome.runtime.onMessage.addListener((request) => {
   if (request.message === "number") {
-
+    console.log("request.input : ", request);
     let e1 = document.getElementById("count_number_DarkPatterns");
     let e2 = document.getElementById("count_number_Price");
     let e3 = document.getElementById("count_number_Action");
-    let e4 = document.getElementById("count_urgency");
+    //let e4 = document.getElementById("count_urgency");
     sendNumber(e1.value, e2.value, e3.value, cpt_urgency, cpt_obstruction, cpt_sneaking, cpt_scarcity, cpt_misdirection, cpt_social);//e4.value
   }
 }
@@ -272,8 +302,3 @@ chrome.runtime.onMessage.addListener(async (request) => {
   }
 }
 );
-
-
-
-
-

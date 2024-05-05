@@ -138,15 +138,9 @@
 }
 
 .button-container button {
-  /*display: inline-block; /* Display buttons inline */
   margin: 5px;
-  /* position: relative; */
   width: 140px;
   height: 48px;
-}
-
-body{
-  width: 350px;
 }
 
 .detection .container button{
