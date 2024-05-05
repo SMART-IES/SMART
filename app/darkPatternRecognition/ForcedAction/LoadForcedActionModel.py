@@ -25,10 +25,10 @@ def initialize_forced_action_classifier_model():
         print("Looking for forced action classifier, please wait ...")
         global forcedActionClassifier 
         forcedActionClassifier = tf.keras.models.load_model(model_path)
-        print("Model found")
+        print("Forced Action Recognition Model found")
         return forcedActionClassifier
     except (OSError) as e:
-        print("Model not found, skipping forced action image recognition")
+        print("Model not found, skipping forced action image recognition. You must train the neural network by launching trainmodel.py (it will take about 5 minutes to train, and take about 1.3 GB in storage)")
 
 def getForcedActionScore(model,image):
     predictions = model.predict(image)

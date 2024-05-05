@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from Text.Recognition import predictDarkPattern, initialize_text_models, checkDarkPattern
-from ForcedAction.Loadmodel import initialize_forced_action_classifier_model, predictForcedActionWithURL
+from ForcedAction.LoadForcedActionModel import initialize_forced_action_classifier_model, predictForcedActionWithURL
 from urllib.parse import urlparse
 
 #---API for Prediction---

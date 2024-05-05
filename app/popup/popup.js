@@ -127,19 +127,9 @@ window.onload = function () {
   
   chrome.runtime.onMessage.addListener(function (request) {
     if (request.message === "update_number") {
-      document.getElementsByClassName("numberDarkPatterns")[0].textContent = request.countDarkPatterns;
-      document.getElementsByClassName("numberPrice")[0].textContent = request.countPrice;
-      document.getElementsByClassName("numberAction")[0].textContent = request.countAction;
+      updateNumbers(request);
 
-    // Remplir counts
-    document.getElementsByClassName("count_forced_action")[0].textContent = request.countAction;
-    document.getElementsByClassName("count_urgency")[0].textContent = request.countUrgency;
-    document.getElementsByClassName("count_obstruction")[0].textContent = request.countObs;
-    document.getElementsByClassName("count_sneaking")[0].textContent = request.countSneak;
-    document.getElementsByClassName("count_scarcity")[0].textContent = request.countScar;
-    document.getElementsByClassName("count_misdirection")[0].textContent = request.countMisdir;
-    document.getElementsByClassName("count_social_proof")[0].textContent = request.countSocial;
-    
+      updateCounts(request);
     }
   });
 
@@ -178,6 +168,23 @@ chrome.runtime.onMessage.addListener(function (request) {
     }
   }
 });
+
+function updateNumbers(request) {
+  document.getElementsByClassName("numberDarkPatterns")[0].textContent = request.countDarkPatterns;
+  document.getElementsByClassName("numberPrice")[0].textContent = request.countPrice;
+  //document.getElementsByClassName("numberAction")[0].textContent = request.countAction;
+  document.getElementsByClassName("forcedActionString")[0].textContent = request.forcedActionString;
+}
+
+function updateCounts(request) {
+  document.getElementsByClassName("count_forced_action")[0].textContent = request.countAction;
+  document.getElementsByClassName("count_urgency")[0].textContent = request.countUrgency;
+  document.getElementsByClassName("count_obstruction")[0].textContent = request.countObs;
+  document.getElementsByClassName("count_sneaking")[0].textContent = request.countSneak;
+  document.getElementsByClassName("count_scarcity")[0].textContent = request.countScar;
+  document.getElementsByClassName("count_misdirection")[0].textContent = request.countMisdir;
+  document.getElementsByClassName("count_social_proof")[0].textContent = request.countSocial;
+}
 
 function info(elementId){
   var x = document.getElementById(elementId);

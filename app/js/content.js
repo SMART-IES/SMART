@@ -4,9 +4,10 @@ var cpt_sneaking = 0;
 var cpt_scarcity = 0;
 var cpt_misdirection = 0;
 var cpt_social = 0;
+var forcedActionString = "if you see me, there is likely an error";
 
 
-function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, countObs, countSneak, countScar, countMisdir, countSocial) {
+function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, countObs, countSneak, countScar, countMisdir, countSocial, forcedActionMessage) {
   chrome.runtime.sendMessage({ message: "update_number", 
   countDarkPatterns: countDarkPatterns, 
   countPrice: countPrice, 
@@ -16,7 +17,8 @@ function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, co
   countSneak: countSneak,
   countScar: countScar,
   countMisdir: countMisdir,
-  countSocial: countSocial
+  countSocial: countSocial,
+  forcedActionString: forcedActionMessage
 });
 }
 
@@ -65,10 +67,10 @@ function highlightTextElements(element, category) {
   if (category === "Urgency") {
     element.style.backgroundColor = "#FB9CFC";
     cpt_urgency++;
-    console.log("cpt urgency : ", cpt_urgency);
+    //console.log("cpt urgency : ", cpt_urgency);
     let f = document.getElementById("count_urgency");
     f.value++;
-    console.log("f value : ", f.value);
+    //console.log("f value : ", f.value);
   }
   if (category === "Obstruction") {
     element.style.backgroundColor = "#FCD69C";
@@ -134,14 +136,14 @@ async function darkPatternIdentification(url) {
 function updateContent() {
   // Update UI or send message to background script
   chrome.runtime.sendMessage({ message: "tasks_complete" });
-  console.log("End of detection");
+  //console.log("End of detection");
 
   // Send message to update number
   let e1 = document.getElementById("count_number_DarkPatterns");
   let e2 = document.getElementById("count_number_Price");
   let e3 = document.getElementById("count_number_Action");
   //let e4 = document.getElementById("count_urgency");
-  sendNumber(e1.value, e2.value, e3.value, (cpt_urgency + e2.value), cpt_obstruction, cpt_sneaking, cpt_scarcity, cpt_misdirection, cpt_social);
+  sendNumber(e1.value, e2.value, e3.value, (cpt_urgency + e2.value), cpt_obstruction, cpt_sneaking, cpt_scarcity, cpt_misdirection, cpt_social, forcedActionString);
 }
 
 function makePageGrey() {
@@ -209,14 +211,14 @@ function scrapTextElements() {
 
   textElements.forEach(element => {
     if (element.className.includes("strike") || element.style.textDecoration.includes("line-through")) {
-      console.log("Prix barré");
+      //console.log("Prix barré");
       highlightprice(element);
     }
 
     for (let i = 0; i < element.attributes.length; i++) {
       const attributeName = element.attributes[i].name;
       if (attributeName.includes("strike")) {
-        console.log("Prix barré");
+        //console.log("Prix barré");
         highlightprice(element);
       }
     }
@@ -255,7 +257,7 @@ async function getTextPrediction(url) {
       if (category.length > 0 && category === "Not Dark Pattern") {
         category = "Failed to categorize";
       }
-      console.log(`Balise: ${elementType}, Texte: "${elementsArray[index].text}", Résultat de la prédiction: ${prediction}, Catégorie: ${category}`);
+      //console.log(`Balise: ${elementType}, Texte: "${elementsArray[index].text}", Résultat de la prédiction: ${prediction}, Catégorie: ${category}`);
 
       highlightTextElements(element, category);
     }
@@ -263,7 +265,20 @@ async function getTextPrediction(url) {
 }
 
 async function getForcedActionPrediction(url){
-  const isThereForcedAction = await predictForcedAction(url);
+  const isThereForcedActionPredictionArray = await predictForcedAction(url);
+  //console.log(isThereForcedActionPredictionArray);
+  
+  isThereForcedAction = isThereForcedActionPredictionArray[0];
+  confidence = isThereForcedActionPredictionArray[1].toFixed(2);
+
+  switch(isThereForcedAction){
+    case "present":
+      forcedActionString = "This website is likely to have a forced action with a confidence of " + confidence + "%";
+      break;
+    case "absent":
+      forcedActionString = "This website does not seem to have a forced action with a confidence of " + confidence + "%";
+      break;
+  }
 }
 
 //---When analyze button pressed---// 
@@ -294,7 +309,7 @@ chrome.runtime.onMessage.addListener((request) => {
 
 chrome.runtime.onMessage.addListener(async (request) => {
   if (request.message === "check") {
-    console.log("request.input : ", request);
+    //console.log("request.input : ", request);
     const result = await checkDarkPattern(request.input);
 
     chrome.runtime.sendMessage({ message: "check_complete",  category: result.category, prediction: result.prediction});
