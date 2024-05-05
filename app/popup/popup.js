@@ -122,24 +122,12 @@ window.onload = function () {
     document.getElementsByClassName("button-container")[0].style.display = "block";
   });
 };
-
-
-
-chrome.runtime.onMessage.addListener(function (request) {
-  if (request.message === "update_number") {
-    document.getElementsByClassName("count_forced_action")[0].textContent = request.countAction;
-    document.getElementsByClassName("count_urgency")[0].textContent = request.countUrgency;
-    document.getElementsByClassName("count_obstruction")[0].textContent = request.countObs;
-    document.getElementsByClassName("count_sneaking")[0].textContent = request.countSneak;
-    document.getElementsByClassName("count_scarcity")[0].textContent = request.countScar;
-    document.getElementsByClassName("count_misdirection")[0].textContent = request.countMisdir;
-    document.getElementsByClassName("count_social_proof")[0].textContent = request.countSocial;
-    document.getElementsByClassName("numberDarkPatterns")[0].textContent = request.countDarkPatterns;
-    document.getElementsByClassName("numberPrice")[0].textContent = request.countPrice;
-    document.getElementsByClassName("numberAction")[0].textContent = request.countAction;
-
-  }
-});
+ 
+  chrome.runtime.onMessage.addListener(function (request) {
+    if (request.message === "update_number") {
+      updateNumbers(request);
+    }
+  });
 
 // Listen for messages from background script
 
@@ -177,7 +165,24 @@ chrome.runtime.onMessage.addListener(function (request) {
   }
 });
 
-function info(elementId) {
+
+function updateNumbers(request) {
+  document.getElementsByClassName("numberDarkPatterns")[0].textContent = request.countDarkPatterns;
+  document.getElementsByClassName("numberPrice")[0].textContent = request.countPrice;
+  //document.getElementsByClassName("numberAction")[0].textContent = request.countAction;
+  document.getElementsByClassName("forcedActionString")[0].textContent = request.forcedActionString;
+  
+  document.getElementsByClassName("count_forced_action")[0].textContent = request.countAction;
+  document.getElementsByClassName("count_urgency")[0].textContent = request.countUrgency;
+  document.getElementsByClassName("count_obstruction")[0].textContent = request.countObs;
+  document.getElementsByClassName("count_sneaking")[0].textContent = request.countSneak;
+  document.getElementsByClassName("count_scarcity")[0].textContent = request.countScar;
+  document.getElementsByClassName("count_misdirection")[0].textContent = request.countMisdir;
+  document.getElementsByClassName("count_social_proof")[0].textContent = request.countSocial;
+}
+
+
+function info(elementId){
   var x = document.getElementById(elementId);
   if (x.style.display === "none") {
     x.style.display = "block";
