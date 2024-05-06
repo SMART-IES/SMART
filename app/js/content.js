@@ -78,6 +78,7 @@ function addInfoIcon(element, category) {
   });
 }
 
+//---Send number to background.js---//
 function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, countObs, countSneak, countScar, countMisdir, countSocial, forcedActionMessage, score) {
   chrome.runtime.sendMessage({ message: "update_number", 
   countDarkPatterns: countDarkPatterns, 
@@ -95,6 +96,7 @@ function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, co
 }
 
 //---Request on AI python API server.py---// 
+//---Predict all elements of a website---//
 async function predictDPWithTextModel(data) {
   const response = await fetch('http://localhost:5000/predictText', {
     method: 'POST',
@@ -107,6 +109,8 @@ async function predictDPWithTextModel(data) {
   return result;
 }
 
+//---Request on AI python API server.py---//
+//---Check if a text is a dark pattern---//
 async function checkDarkPattern(input) {
   
   const response = await fetch('http://localhost:5000/check', {
@@ -120,6 +124,8 @@ async function checkDarkPattern(input) {
   return result;
 }
 
+//---Request on AI python API server.py---//
+//---Predict if a website has a forced action based on screenshoot---//
 async function predictForcedAction(input) {
   
   const response = await fetch('http://localhost:5000/predictForcedAction', {
@@ -182,6 +188,7 @@ function highlightprice(element) {
   e.value++;
 }
 
+//---Highligh action elements---//
 function highlightAction(element) {
   if (element && element.id === "count_number_Action") {
     element.style.backgroundColor = 'green';
@@ -191,7 +198,7 @@ function highlightAction(element) {
   }
 }
 
-
+//---Identify the dark patterns of a website---//
 async function darkPatternIdentification(url) {
   init_counters();
 
@@ -204,6 +211,7 @@ async function darkPatternIdentification(url) {
   updateContent();
 }
 
+//---Update the popup---//
 function updateContent() {
   // Update UI or send message to background script
   chrome.runtime.sendMessage({ message: "tasks_complete" });
@@ -274,6 +282,7 @@ function init_counters() {
   }
 }
 
+//---Scrap all text elements of a website---//
 function scrapTextElements() {
   let textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, div, li, td, a, label');
   let allTexts = [];
@@ -318,6 +327,7 @@ function scrapTextElements() {
   return { elementsArray, elementsSelectorArray };
 }
 
+//---Predict all text elements of a website---//
 async function getTextPrediction(url) {
   // Create arrays to store element details
   let { elementsArray, elementsSelectorArray } = scrapTextElements();
@@ -364,6 +374,7 @@ async function getTextPrediction(url) {
   });
 }
 
+//---Predict if a website has a forced action based on screenshoot---//
 async function getForcedActionPrediction(url){
   const isThereForcedActionPredictionArray = await predictForcedAction(url);
   //console.log(isThereForcedActionPredictionArray);
@@ -394,7 +405,8 @@ chrome.runtime.onMessage.addListener((request) => {
   }
 });
 
-
+//---When check button pressed---//
+//---Check if a text is a dark pattern---//
 chrome.runtime.onMessage.addListener(async (request) => {
   if (request.message === "check") {
     //console.log("request.input : ", request);

@@ -8,10 +8,11 @@ from urllib.parse import urlparse
 app = Flask(__name__)
 CORS(app, resources={r"/predictText": {"origins": "*"}, r"/check": {"origins": "*"}, r"/predictForcedAction": {"origins": "*"}})
 
-
+# Initialize models
 initialize_forced_action_classifier_model()
 initialize_text_models()
 
+# API for prediction of a website
 @app.route('/predictText', methods=['POST'])
 def predictText():
     request_data = request.json
@@ -27,12 +28,14 @@ def predictText():
     print("---------")
     return jsonify({"results": results, "score": score})
 
+# API for checking if a text is a dark pattern
 @app.route('/check', methods=['POST'])
 def check():
     input = request.json
     result = checkDarkPattern(input)
     return jsonify(result)
 
+# API for prediction of a forced action
 @app.route('/predictForcedAction', methods=['POST'])
 def predictForcedAction():
     input = request.json

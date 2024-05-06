@@ -155,6 +155,7 @@ chrome.runtime.onMessage.addListener(function (request) {
 
 });
 
+// Receive the result of the check
 chrome.runtime.onMessage.addListener(function (request) {
   if (request.message === "check_complete") {
     var result = document.getElementById("result");
@@ -171,7 +172,7 @@ chrome.runtime.onMessage.addListener(function (request) {
   }
 });
 
-
+// Update the numbers in the popup
 function updateNumbers(request) {
   /*document.getElementsByClassName("numberDarkPatterns")[0].textContent = request.countDarkPatterns;
   document.getElementsByClassName("numberPrice")[0].textContent = request.countPrice;*/

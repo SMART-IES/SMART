@@ -141,6 +141,7 @@ def decode_labels(label_encoder, encoded_labels):
 
     return decoded_labels_list
 
+# function to detect the language of a text
 def detect_lang(text):
     try:
         lang = detect(text)
@@ -148,6 +149,7 @@ def detect_lang(text):
     except:
         return "en"
 
+# function to initialize the models
 def initialize_text_models():
     global modelRandomForest_en
     global modelRandomForest_fr
@@ -166,6 +168,7 @@ def initialize_text_models():
     modelRandomForestCategory_en = initialize_and_train_category_classifier_model(category_encoder_en, dataset_path_en, dataset_en)
     modelRandomForestCategory_fr = initialize_and_train_category_classifier_model(category_encoder_fr, dataset_path_fr, dataset_fr)
 
+# function to check if a text is a dark pattern
 def checkDarkPattern(input):
     lang = detect_lang(input)
 
@@ -186,7 +189,8 @@ def checkDarkPattern(input):
         prediction_category_decoded = decode_labels(category_encoder_fr, prediction_category)
 
         return {'prediction': prediction_str, 'category': prediction_category_decoded}
-    
+
+# function to predict if a website contains dark patterns
 def predictDarkPattern(text_elements, url):
     results = []
     # add in file url.csv the url and number of elements
@@ -249,7 +253,7 @@ def predictDarkPattern(text_elements, url):
     print("coff : ", coeff)
     print("Score: ", score)
 
-
+    # add in file url.csv the url and score 
     if data['url'].str.contains(url).any():
         url_index = data[data['url'] == url].index
         data.loc[url_index, 'score'] = score
