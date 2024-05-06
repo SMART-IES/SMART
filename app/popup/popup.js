@@ -16,7 +16,7 @@ window.onload = function () {
     var divOuverture = document.getElementById("ouverture");
 
     document.getElementsByClassName("modal-first")[0].style.display = "none";
-    
+
     document.getElementsByClassName("detection")[0].style.display = "block";
 
 
@@ -178,8 +178,9 @@ chrome.runtime.onMessage.addListener(function (request) {
 function updateNumbers(request) {
   document.getElementsByClassName("numberDarkPatterns")[0].textContent = request.countDarkPatterns;
   document.getElementsByClassName("numberPrice")[0].textContent = request.countPrice;
-  document.getElementsByClassName("forcedActionString")[0].textContent = request.forcedActionString;
-  
+  //document.getElementsByClassName("numberAction")[0].textContent = request.countAction;
+  document.getElementById("forcedActionString").textContent = request.forcedActionString;
+
   document.getElementsByClassName("count_forced_action")[0].textContent = request.countAction;
   document.getElementsByClassName("count_urgency")[0].textContent = request.countUrgency;
   document.getElementsByClassName("count_obstruction")[0].textContent = request.countObs;

@@ -63,6 +63,6 @@ def predictForcedActionWithURL(URL):
     classe = class_names[np.argmax(score)]
     probability = 100 * np.max(score)
     
-    print("This image most likely belongs to {} with a {:.2f} percent confidence.".format(classe, probability))
+    print(" PopUp Analyse : This image most likely belongs to {} with a {:.2f} percent confidence.".format(classe, probability))
 
     return classe, probability
