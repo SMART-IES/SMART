@@ -216,36 +216,39 @@ def predictDarkPattern(text_elements, url):
         results.append(checkDarkPattern(text))
 
         #quantity of dark patterns and PonderationCoeff
-        if result['category'] == 'Urgency':
-            nbDarkPatternUrgency += 1
+        if result['category'] == ['Urgency']:
             if nbDarkPatternUrgency == 0:
                 coeff += 1
-        if result['category'] == 'Obstruction':
-            nbDarkPatternObstruction += 1
+            nbDarkPatternUrgency += 1
+        if result['category'] == ['Obstruction']:
             if nbDarkPatternObstruction == 0:
                 coeff += 2
-        if result['category'] == 'Sneaking':
-            nbDarkPatternSneaking += 2
+            nbDarkPatternObstruction += 1
+        if result['category'] == ['Sneaking']:
             if nbDarkPatternSneaking == 0:
                 coeff += 2
-        if result['category'] == 'Forced Action':
-            nbDarkPatternForcedAction += 1
+            nbDarkPatternSneaking += 2
+        if result['category'] == ['Forced Action']:
             if nbDarkPatternForcedAction == 0:
                 coeff += 3
-        if result['category'] == 'Scarcity':
-            nbDarkPatternScarcity += 1
+            nbDarkPatternForcedAction += 1
+        if result['category'] == ['Scarcity']:
             if nbDarkPatternScarcity == 0:
                 coeff += 1
-        if result['category'] == 'Misdirection':
-            nbDarkPatternMisdirection += 1
+            nbDarkPatternScarcity += 1
+        if result['category'] == ['Misdirection']:
             if nbDarkPatternMisdirection == 0:
                 coeff += 1
-        if result['category'] == 'Social Proof':
-            nbDarkPatternSocialProof += 1
+            nbDarkPatternMisdirection += 1
+        if result['category'] == ['Social Proof']:
             if nbDarkPatternSocialProof == 0:
                 coeff += 1
+            nbDarkPatternSocialProof += 1
 
     score = (nbDarkPattern/nbTextElement) * coeff
+    print("coff : ", coeff)
+    print("Score: ", score)
+
 
     if data['url'].str.contains(url).any():
         url_index = data[data['url'] == url].index
@@ -257,4 +260,5 @@ def predictDarkPattern(text_elements, url):
         data = pd.concat([data, new_row], ignore_index=True)
         data.to_csv(url_path, sep=',', index=False)
 
-    return results
+    
+    return results, score

@@ -177,8 +177,7 @@ chrome.runtime.onMessage.addListener(function (request) {
 
 function updateNumbers(request) {
   document.getElementsByClassName("numberDarkPatterns")[0].textContent = request.countDarkPatterns;
-  document.getElementsByClassName("numberPrice")[0].textContent = request.countPrice;
-  //document.getElementsByClassName("numberAction")[0].textContent = request.countAction;
+  document.getElementsByClassName("score")[0].textContent = request.score;
   document.getElementById("forcedActionString").textContent = request.forcedActionString;
 
   document.getElementsByClassName("count_forced_action")[0].textContent = request.countAction;

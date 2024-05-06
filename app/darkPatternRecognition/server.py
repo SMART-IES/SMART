@@ -23,9 +23,9 @@ def predictText():
     hostname = parsed_url.hostname
 
     print("---------")
-    result = predictDarkPattern(request_data, hostname)  # Assuming data is the array of text elements
+    results, score = predictDarkPattern(request_data, hostname)  # Assuming data is the array of text elements
     print("---------")
-    return jsonify(result)
+    return jsonify({"results": results, "score": score})
 
 @app.route('/check', methods=['POST'])
 def check():
