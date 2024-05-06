@@ -16,25 +16,23 @@ Dark Pattern definition : "a user interface that has been carefully crafted to t
 Inform clearly and precisely the users about the dark patterns present during their internet browsing
 
 ## Requirements
--Dataset dark patterns and their category
--Dataset text recognition
+- Dataset dark patterns and their category
+- Dataset text recognition
 
 ## Material
--Install JupyterNotebook, Flask, flask-cors, googletrans, langdetect, postman (optional to test API) 
+- Install Google Chrome on your system. If you use ubuntu, you must install chrome on your ubuntu using these commands: 
+* wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+* sudo dpkg -i google-chrome-stable_current_amd64.deb
+
+- Install python packages: JupyterNotebook, Flask, flask-cors, googletrans, langdetect, postman (optional to test API) 
 
 ## How to use
--Run server with command : python3 server.py
--In Google Chrome, click on Manage extensions, and then click on the Developer mode in the upper right corner of the web page
--Now click on the load unpacked button in the upper left corner, select the path of the folder app
--When using this plugin, click on the button "Analyze site", and wait for the result
--Click on the button "Get Number" to get the number of dark patterns
-
-## Models for OCR
-- EAST : https://github.com/argman/EAST
-Download link : https://www.dropbox.com/s/r2ingd0l3zt8hxs/frozen_east_text_detection.tar.gz?dl=1
-
-- CRNN : https://github.com/meijieru/crnn.pytorch
-Download link : https://drive.google.com/drive/folders/1cTbQ3nuZG-EKWak6emD_s8_hHXWz7lAr?usp=sharing
+- Generate the ForceAction model using LoadForcedActionModel.py. Model size is about 1.2GB, if you don't have enough memory to generate this model, you can use this download link: https://drive.google.com/drive/folders/19KObFhm64D3wkj8BK-OWNxWxE261t0dP?usp=drive_link
+- Run server with command : python3 server.py
+- In Google Chrome, click on Manage extensions, and then click on the Developer mode in the upper right corner of the web page
+- Now click on the load unpacked button in the upper left corner, select the path of the folder app
+- When using this plugin, click on the button "Analyze site", and wait for the result
+- If you want to know if a sentence is a dark pattern, enter it in the text box below and click on button check it.
 
 ## Note for Students
 
