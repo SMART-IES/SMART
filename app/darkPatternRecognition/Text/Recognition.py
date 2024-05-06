@@ -186,26 +186,71 @@ def checkDarkPattern(input):
         prediction_category_decoded = decode_labels(category_encoder_fr, prediction_category)
 
         return {'prediction': prediction_str, 'category': prediction_category_decoded}
-
+    
 def predictDarkPattern(text_elements, url):
     results = []
     # add in file url.csv the url and number of elements
     data = pd.read_csv(url_path, sep=',')
-    score = 0
+
+    coeff = 0
+    nbTextElement = 0
+    nbDarkPattern = 0
+
+    nbDarkPatternUrgency = 0            
+    nbDarkPatternObstruction = 0       
+    nbDarkPatternSneaking = 0           
+    nbDarkPatternForcedAction = 0       
+    nbDarkPatternScarcity = 0           
+    nbDarkPatternMisdirection = 0       
+    nbDarkPatternSocialProof = 0        
+
       
     for text_element in text_elements['texts']:
         text = text_element['text']
         tag = text_element['tag']
         result = checkDarkPattern(text)
+        #quantity of all text elements 
+        nbTextElement += 1
         if result['prediction'] == '1':
-            score += 1
+            nbDarkPattern += 1
         results.append(checkDarkPattern(text))
 
-    if url != None:
-        if data['url'].str.contains(url).any():
-            url_index = data[data['url'] == url].index
-            data.loc[url_index, 'score'] = score
-            data.to_csv(url_path, sep=',', index=False)
+        #quantity of dark patterns and PonderationCoeff
+        if result['category'] == 'Urgency':
+            nbDarkPatternUrgency += 1
+            if nbDarkPatternUrgency == 0:
+                coeff += 1
+        if result['category'] == 'Obstruction':
+            nbDarkPatternObstruction += 1
+            if nbDarkPatternObstruction == 0:
+                coeff += 2
+        if result['category'] == 'Sneaking':
+            nbDarkPatternSneaking += 2
+            if nbDarkPatternSneaking == 0:
+                coeff += 2
+        if result['category'] == 'Forced Action':
+            nbDarkPatternForcedAction += 1
+            if nbDarkPatternForcedAction == 0:
+                coeff += 3
+        if result['category'] == 'Scarcity':
+            nbDarkPatternScarcity += 1
+            if nbDarkPatternScarcity == 0:
+                coeff += 1
+        if result['category'] == 'Misdirection':
+            nbDarkPatternMisdirection += 1
+            if nbDarkPatternMisdirection == 0:
+                coeff += 1
+        if result['category'] == 'Social Proof':
+            nbDarkPatternSocialProof += 1
+            if nbDarkPatternSocialProof == 0:
+                coeff += 1
+
+    score = (nbDarkPattern/nbTextElement) * coeff
+
+    if data['url'].str.contains(url).any():
+        url_index = data[data['url'] == url].index
+        data.loc[url_index, 'score'] = score
+        data.to_csv(url_path, sep=',', index=False)
 
     else:
         new_row = pd.DataFrame({'url': [url], 'score': [score]})

@@ -170,8 +170,8 @@ function updateNumbers(request) {
   document.getElementsByClassName("numberDarkPatterns")[0].textContent = request.countDarkPatterns;
   document.getElementsByClassName("numberPrice")[0].textContent = request.countPrice;
   //document.getElementsByClassName("numberAction")[0].textContent = request.countAction;
-  document.getElementsByClassName("forcedActionString")[0].textContent = request.forcedActionString;
-  
+  document.getElementById("forcedActionString").textContent = request.forcedActionString;
+
   document.getElementsByClassName("count_forced_action")[0].textContent = request.countAction;
   document.getElementsByClassName("count_urgency")[0].textContent = request.countUrgency;
   document.getElementsByClassName("count_obstruction")[0].textContent = request.countObs;
