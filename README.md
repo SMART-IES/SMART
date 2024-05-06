@@ -18,6 +18,7 @@ Inform clearly and precisely the users about the dark patterns present during th
 ## Requirements
 -Dataset dark patterns and their category
 -Dataset text recognition
+-Forced action image recognition model : either train it yourself or download it from https://filesender.renater.fr/?s=download&token=201280b9-cfea-473e-9750-6552eaebf0af and put it in ./darkPatternRecognition/ForcedAction
 
 ## Material
 -Install JupyterNotebook, Flask, flask-cors, googletrans, langdetect, postman (optional to test API) 

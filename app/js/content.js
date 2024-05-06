@@ -1,10 +1,10 @@
-
 var cpt_urgency = 0;
 var cpt_obstruction = 0;
 var cpt_sneaking = 0;
 var cpt_scarcity = 0;
 var cpt_misdirection = 0;
 var cpt_social = 0;
+var forcedActionString = "if you see me, there is likely an error";
 
 const darknessThreshold = 100;
 
@@ -78,7 +78,7 @@ function addInfoIcon(element, category) {
   });
 }
 
-function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, countObs, countSneak, countScar, countMisdir, countSocial) {
+function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, countObs, countSneak, countScar, countMisdir, countSocial, forcedActionMessage) {
   chrome.runtime.sendMessage({ message: "update_number", 
   countDarkPatterns: countDarkPatterns, 
   countPrice: countPrice, 
@@ -88,13 +88,14 @@ function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, co
   countSneak: countSneak,
   countScar: countScar,
   countMisdir: countMisdir,
-  countSocial: countSocial
+  countSocial: countSocial,
+  forcedActionString: forcedActionMessage
 });
 }
 
 //---Request on AI python API server.py---// 
-async function predictWithModel(data) {
-  const response = await fetch('http://localhost:5000/predict', {
+async function predictDPWithTextModel(data) {
+  const response = await fetch('http://localhost:5000/predictText', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -106,7 +107,7 @@ async function predictWithModel(data) {
 }
 
 async function checkDarkPattern(input) {
-  console.log("input : ", input);
+  
   const response = await fetch('http://localhost:5000/check', {
     method: 'POST',
     headers: {
@@ -118,6 +119,18 @@ async function checkDarkPattern(input) {
   return result;
 }
 
+async function predictForcedAction(input) {
+  
+  const response = await fetch('http://localhost:5000/predictForcedAction', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(input)
+  });
+  const result = await response.json();
+  return result;
+}
 
 //---Highligh text elements---// 
 function highlightTextElements(element, category) {
@@ -178,10 +191,39 @@ function highlightAction(element) {
 }
 
 
-async function darkPatternIdentification() {
-  let textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, div, li, td, a, label');
-  let allTexts = [];
+async function darkPatternIdentification(url) {
+  init_counters();
 
+  makePageGrey();
+
+  await getTextPrediction(url);
+
+  await getForcedActionPrediction(url);
+
+  updateContent();
+}
+
+function updateContent() {
+  // Update UI or send message to background script
+  chrome.runtime.sendMessage({ message: "tasks_complete" });
+  //console.log("End of detection");
+
+  // Send message to update number
+  let e1 = document.getElementById("count_number_DarkPatterns");
+  let e2 = document.getElementById("count_number_Price");
+  let e3 = document.getElementById("count_number_Action");
+  //let e4 = document.getElementById("count_urgency");
+  sendNumber(e1.value, e2.value, e3.value, (cpt_urgency + e2.value), cpt_obstruction, cpt_sneaking, cpt_scarcity, cpt_misdirection, cpt_social, forcedActionString);
+}
+
+function makePageGrey() {
+  var images = document.getElementsByTagName('img');
+  for (var i = 0; i < images.length; i++) {
+    images[i].style.filter = 'grayscale(1)';
+  }
+}
+
+function init_counters() {
   if (!document.getElementById("count_number_DarkPatterns")) {
     let g = document.createElement("div");
     g.id = "count_number_DarkPatterns";
@@ -229,45 +271,17 @@ async function darkPatternIdentification() {
     let e = document.getElementById("count_urgency");
     e.value = 0;
   }
+}
 
-  // -------------------------------------------------------------
-  // Griser page
-  /*var images = document.getElementsByTagName('img');
-  for (var i = 0; i < images.length; i++) {
-      images[i].style.filter = 'grayscale(1)';
-  }
-  // Les balises autres que les images
-  document.querySelectorAll('*').forEach(element => {
-      const computedColor = window.getComputedStyle(element).color;
-      const computedBgColor = window.getComputedStyle(element).backgroundColor;
-      const rgb = computedBgColor.match(/\d+/g).map(Number);
-
-      // Apply changes only if the background color is not dark
-      if (calculateBrightness(rgb) > darknessThreshold) {
-        // Check if the color is neither black nor white
-        if (computedColor !== 'rgb(0, 0, 0)' && computedColor !== 'rgb(255, 255, 255)') {
-            element.style.color = 'initial'; // Reset the color
-        }
-
-        // Check if the background color is neither black nor white
-        if (computedBgColor !== 'rgb(0, 0, 0)' && computedBgColor !== 'rgb(255, 255, 255)') {
-            if (computedColor !== 'rgb(255, 255, 255)') {
-                element.style.backgroundColor = 'initial'; // Reset the background color
-            }
-        }
-      }
-
-      element.style.borderColor = 'initial';
-  });
-*/
-
-  // Create arrays to store element details
+function scrapTextElements() {
+  let textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, div, li, td, a, label');
+  let allTexts = [];
   let elementsArray = [];
   let elementsSelectorArray = [];
 
   textElements.forEach(element => {
     if (element.className.includes("strike") || element.style.textDecoration.includes("line-through")) {
-      console.log("Prix barré");
+      //console.log("Prix barré");
       highlightprice(element);
     }
     /*else
@@ -278,7 +292,7 @@ async function darkPatternIdentification() {
     for (let i = 0; i < element.attributes.length; i++) {
       const attributeName = element.attributes[i].name;
       if (attributeName.includes("strike")) {
-        console.log("Prix barré");
+        //console.log("Prix barré");
         highlightprice(element);
       }
       /*else
@@ -296,27 +310,33 @@ async function darkPatternIdentification() {
 
         // Store element details
         elementsArray.push({ text: textContent, tag: elementType });
-        elementsSelectorArray.push(element)
+        elementsSelectorArray.push(element);
       }
     }
   });
+  return { elementsArray, elementsSelectorArray };
+}
 
-  // Send array of element details to server
-  const response = await predictWithModel({ texts: elementsArray });
+async function getTextPrediction(url) {
+  // Create arrays to store element details
+  let { elementsArray, elementsSelectorArray } = scrapTextElements();
+
+  // Send array of element details to server and retrieve response
+  const textResponse = await predictDPWithTextModel({ texts: elementsArray, url: url });
 
   // Process the response
-  response.forEach((result, index) => {
+  textResponse.forEach((result, index) => {
     element = elementsSelectorArray[index];
     elementType = elementsArray[index].tag;
     let category = result.category[0];
     let prediction = result.prediction;
-    
+
     if (prediction === "1") {
       if (category.length > 0 && category === "Not Dark Pattern") {
         category = "Failed to categorize";
       }
-      console.log(`Balise: ${elementType}, Texte: "${elementsArray[index].text}", Résultat de la prédiction: ${prediction}, Catégorie: ${category}`);
-      
+      //console.log(`Balise: ${elementType}, Texte: "${elementsArray[index].text}", Résultat de la prédiction: ${prediction}, Catégorie: ${category}`);
+
       highlightTextElements(element, category);
     }
     else
@@ -338,19 +358,24 @@ async function darkPatternIdentification() {
     }
 
   });
-
-  // Update UI or send message to background script
-  chrome.runtime.sendMessage({ message: "tasks_complete" });
-  console.log("End of detection");
-
-  // Send message to update number
-  let e1 = document.getElementById("count_number_DarkPatterns");
-  let e2 = document.getElementById("count_number_Price");
-  let e3 = document.getElementById("count_number_Action");
-  //let e4 = document.getElementById("count_urgency");
-  sendNumber(e1.value, e2.value, e3.value, (cpt_urgency + e2.value), cpt_obstruction, cpt_sneaking, cpt_scarcity, cpt_misdirection, cpt_social);
 }
 
+async function getForcedActionPrediction(url){
+  const isThereForcedActionPredictionArray = await predictForcedAction(url);
+  //console.log(isThereForcedActionPredictionArray);
+  
+  isThereForcedAction = isThereForcedActionPredictionArray[0];
+  confidence = isThereForcedActionPredictionArray[1].toFixed(2);
+
+  switch(isThereForcedAction){
+    case "present":
+      forcedActionString = "This website is likely to have a forced action with a confidence of " + confidence + "%";
+      break;
+    case "absent":
+      forcedActionString = "This website does not seem to have a forced action with a confidence of " + confidence + "%";
+      break;
+  }
+}
 
 //---When analyze button pressed---// 
 chrome.runtime.onMessage.addListener((request) => {
@@ -361,7 +386,7 @@ chrome.runtime.onMessage.addListener((request) => {
     cpt_scarcity = 0;
     cpt_misdirection = 0;
     cpt_social = 0;*/
-    darkPatternIdentification();
+    darkPatternIdentification(request.url)
   }
 });
 
@@ -380,7 +405,7 @@ chrome.runtime.onMessage.addListener((request) => {
 
 chrome.runtime.onMessage.addListener(async (request) => {
   if (request.message === "check") {
-    console.log("request.input : ", request);
+    //console.log("request.input : ", request);
     const result = await checkDarkPattern(request.input);
 
     chrome.runtime.sendMessage({ message: "check_complete",  category: result.category, prediction: result.prediction});
