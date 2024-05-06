@@ -27,31 +27,23 @@ function addInfoIcon(element, category) {
 
   // Create logomini
   var miniLogo = document.createElement("img");
-  miniLogo.src = chrome.runtime.getURL("app/popup/logo_mini.png"); // current dir racine projet, logo extention if not categorized
 
-  console.log(chrome.runtime.getURL("app/popup/logo_mini.png"));
   if (category === "Urgency") {
-    miniLogo.src = chrome.runtime.getURL("app/popup/urgency.png");
     tooltip.style.backgroundColor = "#FB9CFC";
   }
   if (category === "Obstruction") {
-    miniLogo.src = chrome.runtime.getURL("bmmcgdnpcbkobimloobmmljjgjgcnmoh/app/popup/obstruction.png");
     tooltip.style.backgroundColor = "#FCD69C";
   }
   if (category === "Sneaking") {
-    miniLogo.src = chrome.runtime.getURL("app/popup/sneaking.png");
     tooltip.style.backgroundColor = "#FCF99C";
   }
   if (category === "Scarcity") {
-    miniLogo.src = "app/popup/scarcity.png";
     tooltip.style.backgroundColor = "#83C9FC";
   }
   if (category === "Misdirection") {
-    miniLogo.src = "app/popup/misdirection.png";
     tooltip.style.backgroundColor = "#9583FC";
   }
   if (category === "Social Proof") {
-    miniLogo.src = "app/popup/social_proof.png";
     tooltip.style.backgroundColor = "#FB9CFC";
   }
 
@@ -359,7 +351,7 @@ async function getTextPrediction(url) {
       if (element.childNodes.length == 1 && element.childNodes[0].nodeType === Node.TEXT_NODE) {
         let textContent = element.textContent.trim();
         let elementType = element.tagName;
-        console.log(elementType);
+        //console.log(elementType);
   
         if (textContent.length > 0) {
           element.style.filter = 'grayscale(1)';
