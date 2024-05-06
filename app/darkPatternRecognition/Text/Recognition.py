@@ -249,7 +249,7 @@ def predictDarkPattern(text_elements, url):
                 coeff += 1
             nbDarkPatternSocialProof += 1
 
-    score = (nbDarkPattern/nbTextElement) * coeff
+    score = round((nbDarkPattern/nbTextElement) * coeff * 10)
     print("coff : ", coeff)
     print("Score: ", score)
 
