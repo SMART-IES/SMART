@@ -21,7 +21,7 @@ Inform clearly and precisely the users about the dark patterns present during th
 -Forced action image recognition model : either train it yourself or download it from https://filesender.renater.fr/?s=download&token=201280b9-cfea-473e-9750-6552eaebf0af and put it in ./darkPatternRecognition/ForcedAction
 
 ## Material
--Install JupyterNotebook, Flask, flask-cors, googletrans, langdetect, postman (optional to test API) 
+-Install JupyterNotebook, Flask, flask-cors, googletrans, langdetect, html2image, tensorflow, scikit-learn, postman (optional to test API) 
 
 ## How to use
 -Run server with command : python3 server.py
