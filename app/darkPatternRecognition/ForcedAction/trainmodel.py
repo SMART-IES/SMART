@@ -1,8 +1,4 @@
-import matplotlib.pyplot as plt
-import numpy as np
-import PIL
 import tensorflow as tf
-import os
 import pathlib
 from pathlib import Path
 
@@ -11,19 +7,19 @@ from tensorflow.keras import layers
 from tensorflow.keras.models import Sequential
 
 
-batch_size = 5
+batch_size = 10
 img_height = 926
 img_width = 1920
 epochs = 5
 
 base_path = Path(__file__).parent
-dataset_dir_name = "dataset"
+dataset_dir_name = "dataset/"
 dataset_path = (base_path / ("../ForcedAction/" + dataset_dir_name)).resolve()
 data_dir = pathlib.Path(dataset_path).with_suffix('')
 save_path = (base_path / ("../ForcedAction/forcedactionmodel.keras")).resolve()
 
 train_ds = tf.keras.utils.image_dataset_from_directory(
-  data_dir,
+  "./dataset",
   validation_split=0.2,
   subset="training",
   seed=123,
@@ -31,7 +27,7 @@ train_ds = tf.keras.utils.image_dataset_from_directory(
   batch_size=batch_size)
 
 val_ds = tf.keras.utils.image_dataset_from_directory(
-    data_dir,
+    "./dataset",
     validation_split=0.2,
     subset="validation",
     seed=123,

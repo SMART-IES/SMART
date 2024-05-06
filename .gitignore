@@ -2,3 +2,5 @@
 *.pb
 *.pyc
 *.keras
+pip
+test.html
