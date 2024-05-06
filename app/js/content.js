@@ -5,7 +5,6 @@ var cpt_scarcity = 0;
 var cpt_misdirection = 0;
 var cpt_social = 0;
 var forcedActionString = "if you see me, there is likely an error";
-var score = 0;
 
 const darknessThreshold = 100;
 
@@ -79,7 +78,7 @@ function addInfoIcon(element, category) {
   });
 }
 
-function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, countObs, countSneak, countScar, countMisdir, countSocial, forcedActionMessage, score) {
+function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, countObs, countSneak, countScar, countMisdir, countSocial, forcedActionMessage) {
   chrome.runtime.sendMessage({ message: "update_number", 
   countDarkPatterns: countDarkPatterns, 
   countPrice: countPrice, 
@@ -90,8 +89,7 @@ function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, co
   countScar: countScar,
   countMisdir: countMisdir,
   countSocial: countSocial,
-  forcedActionString: forcedActionMessage,
-  score: score
+  forcedActionString: forcedActionMessage
 });
 }
 
@@ -215,7 +213,7 @@ function updateContent() {
   let e2 = document.getElementById("count_number_Price");
   let e3 = document.getElementById("count_number_Action");
   //let e4 = document.getElementById("count_urgency");
-  sendNumber(e1.value, e2.value, e3.value, (cpt_urgency + e2.value), cpt_obstruction, cpt_sneaking, cpt_scarcity, cpt_misdirection, cpt_social, forcedActionString, score);
+  sendNumber(e1.value, e2.value, e3.value, (cpt_urgency + e2.value), cpt_obstruction, cpt_sneaking, cpt_scarcity, cpt_misdirection, cpt_social, forcedActionString);
 }
 
 function makePageGrey() {
@@ -324,9 +322,7 @@ async function getTextPrediction(url) {
   let { elementsArray, elementsSelectorArray } = scrapTextElements();
 
   // Send array of element details to server and retrieve response
-  const response = await predictDPWithTextModel({ texts: elementsArray, url: url });
-  let textResponse = response.results;
-  score = response.score;
+  const textResponse = await predictDPWithTextModel({ texts: elementsArray, url: url });
 
   // Process the response
   textResponse.forEach((result, index) => {
@@ -345,6 +341,9 @@ async function getTextPrediction(url) {
     }
     else
     {
+      if (elementType.toLowerCase() == 'button') {
+        element.style.filter = 'grayscale(1)';
+      }
       if (element.childNodes.length == 1 && element.childNodes[0].nodeType === Node.TEXT_NODE) {
         let textContent = element.textContent.trim();
         let elementType = element.tagName;
@@ -353,11 +352,10 @@ async function getTextPrediction(url) {
         if (textContent.length > 0) {
           element.style.filter = 'grayscale(1)';
         }
+        if(elementType.toLowerCase() == 'span' || elementType.toLowerCase() == 'img'){
+          element.style.filter = 'grayscale(1)';
+        }
         
-      }
-
-      if(elementType.toLowerCase() == 'button' || elementType == 'img'){
-        element.style.filter = 'grayscale(1)';
       }
     }
 
@@ -394,18 +392,6 @@ chrome.runtime.onMessage.addListener((request) => {
   }
 });
 
-//---When get numbers button pressed---// 
-/*chrome.runtime.onMessage.addListener((request) => {
-  if (request.message === "number") {
-    console.log("request.input : ", request);
-    let e1 = document.getElementById("count_number_DarkPatterns");
-    let e2 = document.getElementById("count_number_Price");
-    let e3 = document.getElementById("count_number_Action");
-    //let e4 = document.getElementById("count_urgency");
-    sendNumber(e1.value, e2.value, e3.value, cpt_urgency, cpt_obstruction, cpt_sneaking, cpt_scarcity, cpt_misdirection, cpt_social);//e4.value
-  }
-}
-);*/
 
 chrome.runtime.onMessage.addListener(async (request) => {
   if (request.message === "check") {

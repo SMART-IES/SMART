@@ -18,6 +18,7 @@ window.onload = function () {
     document.getElementsByClassName("modal-first")[0].style.display = "none";
 
     document.getElementsByClassName("detection")[0].style.display = "block";
+    document.getElementById("score").style.display = "block";
 
 
     // Create a new image element for the loading GIF
@@ -101,6 +102,7 @@ window.onload = function () {
   // Close icon
   document.getElementById("closeIcon").addEventListener("click", function() { // marche pas encore après exécution
     document.getElementsByClassName("detection")[0].style.display = "none";
+    document.getElementById("score").style.display = "none";
     
     var lanterne = document.getElementById("divLogo");//nouvelle lanterne
     var fin = document.getElementById("end-div"); //notif fin
@@ -131,11 +133,6 @@ chrome.runtime.onMessage.addListener(function (request) {
     // Remove the loading GIF
     var loadingImage = document.getElementById("loading-image");
     if (loadingImage) {
-      // Create a new image element for the Ending GIF
-      /*var finishImage = document.createElement("img");
-      finishImage.classList.add('center-img');
-      finishImage.src = "finish.gif";
-      finishImage.id = "finish-image"; // Set the ID here*/
 
       var endDiv = document.createElement("div");
       endDiv.id = "end-div";
@@ -176,8 +173,8 @@ chrome.runtime.onMessage.addListener(function (request) {
 
 
 function updateNumbers(request) {
-  document.getElementsByClassName("numberDarkPatterns")[0].textContent = request.countDarkPatterns;
-  document.getElementsByClassName("score")[0].textContent = request.score;
+  /*document.getElementsByClassName("numberDarkPatterns")[0].textContent = request.countDarkPatterns;
+  document.getElementsByClassName("numberPrice")[0].textContent = request.countPrice;*/
   document.getElementById("forcedActionString").textContent = request.forcedActionString;
 
   document.getElementsByClassName("count_forced_action")[0].textContent = request.countAction;
@@ -198,3 +195,7 @@ function info(elementId){
     x.style.display = "none";
   }
 }
+
+document.querySelector('.lear_more_button').addEventListener('click', function() {
+  window.parent.open('https://helenedos-santos.bubbleapps.io/version-test/');
+});
