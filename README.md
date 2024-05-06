@@ -32,8 +32,9 @@ Inform clearly and precisely the users about the dark patterns present during th
 - Run server with command : python3 server.py
 - In Google Chrome, click on Manage extensions, and then click on the Developer mode in the upper right corner of the web page
 - Now click on the load unpacked button in the upper left corner, select the path of the folder app
-- When using this plugin, click on the button "Analyze site", and wait for the result
-- If you want to know if a sentence is a dark pattern, enter it in the text box below and click on button check it.
+- When using this plugin, click on the button "Detecter", and wait for the result
+- If you want to know if a sentence is a dark pattern, enter it in the text box below and click on button Vérifier
+- Click on En savoir plus for more details on dark patterns
 
 ## Note for Students
 
