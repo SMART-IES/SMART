@@ -3,6 +3,9 @@
     "name": "SMART",
     "version": "1.0",
     "description": "SMART",
+    "icons": {
+        "16": "popup/logo_mini.png"
+    },
     "action": {
         "default_popup": "popup/popup.html"
     },

@@ -4,6 +4,7 @@
 <head>
     <link rel="stylesheet" href="../css/style.css">
     <script type="module" src="popup.js"></script>
+    <meta charset="utf-8"/>
 </head>
 
 <body>
@@ -120,13 +121,13 @@
 
     </div><br>
     <hr>
-    <div class="jeu" style="text-align: center;">
-        <div class="text-subtitle"> Jeu interactif d'identification de dark patterns</div>
-        <div style="display: inline-block;">
-            <input type="text" class="input text-body" placeholder="Enter the text" id="input" style="height: 46px; border-radius: 10px;">
-            <button class="check-button button-filled-text-only" type="button"> check it !</button>
+    <div class="button-container" style="width: 350px; display: inline-block; justify-content: center;">
+        <div class="text-subtitle" style="text-align: center;"> Identification de dark patterns</div>
+        <div style="display: inline-flex;">
+            <input type="text" class="input text-body" placeholder="Enter the text" id="input" style="width: 70%; height: 44px; border-radius: 10px; margin-left: 20px; margin-top: 5px;">
+            <button class="check-button button-filled-text-only" type="button"> V&eacute;rifier</button>
         </div>
-        <p class="text-body" id="result" style="display: none;">Result</p> <!-- style="display: none;" -->
+        <p class="text-body" id="result" style="display: none;">Result</p>
     </div>
 </body>
 

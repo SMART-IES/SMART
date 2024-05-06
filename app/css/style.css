@@ -152,3 +152,35 @@
   margin-left: auto;
   margin-right: auto;
 }
+
+.info-icon {
+  margin-left: 5px;
+  cursor: pointer;
+  border: 2px solid #000;
+  border-radius: 50%; /* Makes the border circle-shaped */
+  padding: 5px;
+  display: inline-flex; /* Ensures the border is around the icon content */
+  align-items: center; /* Center the icon vertically */
+  justify-content: center; /* Center the icon horizontally */
+  width: 10px;
+  height: 10px;
+  font-size: 15px;
+}
+
+.tooltip {
+  position: absolute;
+  background-color: white;
+  color: rgba(0, 0, 0, 0.8);
+  padding: 5px;
+  border-radius: 5px;
+  visibility: hidden;
+  z-index: 999; /* Ensure tooltip appears above other elements */
+}
+
+.text-tooltip{
+  font-family: "Arial";
+  font-size: 16px;
+  line-height:20px;
+  font-weight: 100;
+  color:var(--text-color);
+}

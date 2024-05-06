@@ -14,6 +14,69 @@ function calculateBrightness(rgb) {
     return (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
 }
 
+function addInfoIcon(element, category) {
+  // Create information icon element
+  const infoIcon = document.createElement('span');
+  infoIcon.className = 'info-icon';
+  infoIcon.innerHTML = "i";
+
+  // Create tooltip element
+  const tooltip = document.createElement('div');
+  tooltip.className = 'tooltip';
+  tooltip.style.display = 'flex';
+
+  // Create logomini
+  var miniLogo = document.createElement("img");
+  miniLogo.src = chrome.runtime.getURL("app/popup/logo_mini.png"); // current dir racine projet, logo extention if not categorized
+
+  console.log(chrome.runtime.getURL("app/popup/logo_mini.png"));
+  if (category === "Urgency") {
+    miniLogo.src = chrome.runtime.getURL("app/popup/urgency.png");
+    tooltip.style.backgroundColor = "#FB9CFC";
+  }
+  if (category === "Obstruction") {
+    miniLogo.src = chrome.runtime.getURL("bmmcgdnpcbkobimloobmmljjgjgcnmoh/app/popup/obstruction.png");
+    tooltip.style.backgroundColor = "#FCD69C";
+  }
+  if (category === "Sneaking") {
+    miniLogo.src = chrome.runtime.getURL("app/popup/sneaking.png");
+    tooltip.style.backgroundColor = "#FCF99C";
+  }
+  if (category === "Scarcity") {
+    miniLogo.src = "app/popup/scarcity.png";
+    tooltip.style.backgroundColor = "#83C9FC";
+  }
+  if (category === "Misdirection") {
+    miniLogo.src = "app/popup/misdirection.png";
+    tooltip.style.backgroundColor = "#9583FC";
+  }
+  if (category === "Social Proof") {
+    miniLogo.src = "app/popup/social_proof.png";
+    tooltip.style.backgroundColor = "#FB9CFC";
+  }
+
+  // Create textDiv
+  var textDiv = document.createElement("div");
+  textDiv.className = 'text-tooltip';
+
+  // Create texte
+  var desc = document.createTextNode("Type : "+ category);
+  textDiv.appendChild(desc);
+
+  tooltip.appendChild(miniLogo);
+  tooltip.appendChild(textDiv);
+
+  element.appendChild(infoIcon);
+  element.appendChild(tooltip);
+
+  infoIcon.addEventListener('mouseenter', () => {
+      tooltip.style.visibility = 'visible';
+  });
+
+  infoIcon.addEventListener('mouseleave', () => {
+      tooltip.style.visibility = 'hidden';
+  });
+}
 
 function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, countObs, countSneak, countScar, countMisdir, countSocial) {
   chrome.runtime.sendMessage({ message: "update_number", 
@@ -58,14 +121,11 @@ async function checkDarkPattern(input) {
 
 //---Highligh text elements---// 
 function highlightTextElements(element, category) {
-  //element.style.backgroundColor = 'yellow';
   if (category === "Urgency") {
     element.style.backgroundColor = "#FB9CFC";
     cpt_urgency++;
-    console.log("cpt urgency : ", cpt_urgency);
-    let f = document.getElementById("count_urgency");
-    f.value++;
-    console.log("f value : ", f.value);
+    /*let f = document.getElementById("count_urgency");
+    f.value++;*/
   }
   if (category === "Obstruction") {
     element.style.backgroundColor = "#FCD69C";
@@ -82,7 +142,6 @@ function highlightTextElements(element, category) {
   if (category === "Misdirection") {
     element.style.backgroundColor = "#9583FC";
     cpt_misdirection++;
-    console.log("misdirection");
   }
   if (category === "Social Proof") {
     element.style.backgroundColor = "#FB9CFC";
@@ -96,6 +155,8 @@ function highlightTextElements(element, category) {
   let e = document.getElementById("count_number_DarkPatterns");
   e.value++;
 
+  // Add info icon with description on hover
+  addInfoIcon(element, category);
 }
 
 //---Highligh price elements---// 
@@ -171,7 +232,7 @@ async function darkPatternIdentification() {
 
   // -------------------------------------------------------------
   // Griser page
-  var images = document.getElementsByTagName('img');
+  /*var images = document.getElementsByTagName('img');
   for (var i = 0; i < images.length; i++) {
       images[i].style.filter = 'grayscale(1)';
   }
@@ -198,7 +259,7 @@ async function darkPatternIdentification() {
 
       element.style.borderColor = 'initial';
   });
-
+*/
 
   // Create arrays to store element details
   let elementsArray = [];
@@ -209,6 +270,10 @@ async function darkPatternIdentification() {
       console.log("Prix barré");
       highlightprice(element);
     }
+    /*else
+    {
+      element.style.filter = 'grayscale(1)';
+    }*/
 
     for (let i = 0; i < element.attributes.length; i++) {
       const attributeName = element.attributes[i].name;
@@ -216,6 +281,10 @@ async function darkPatternIdentification() {
         console.log("Prix barré");
         highlightprice(element);
       }
+      /*else
+      {
+        element.style.filter = 'grayscale(1)';
+      }*/
     }
 
     if (element.childNodes.length == 1 && element.childNodes[0].nodeType === Node.TEXT_NODE) {
@@ -250,6 +319,23 @@ async function darkPatternIdentification() {
       
       highlightTextElements(element, category);
     }
+    else
+    {
+      if (element.childNodes.length == 1 && element.childNodes[0].nodeType === Node.TEXT_NODE) {
+        let textContent = element.textContent.trim();
+        let elementType = element.tagName;
+        console.log(elementType);
+  
+        if (textContent.length > 0) {
+          element.style.filter = 'grayscale(1)';
+        }
+        
+      }
+
+      if(elementType.toLowerCase() == 'button' || elementType == 'img'){
+        element.style.filter = 'grayscale(1)';
+      }
+    }
 
   });
 
@@ -269,12 +355,12 @@ async function darkPatternIdentification() {
 //---When analyze button pressed---// 
 chrome.runtime.onMessage.addListener((request) => {
   if (request.message === "analyze_site") {
-    cpt_urgency = 0;
+    /*cpt_urgency = 0;
     cpt_obstruction = 0;
     cpt_sneaking = 0;
     cpt_scarcity = 0;
     cpt_misdirection = 0;
-    cpt_social = 0;
+    cpt_social = 0;*/
     darkPatternIdentification();
   }
 });
