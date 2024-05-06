@@ -184,6 +184,7 @@ function updateNumbers(request) {
   document.getElementsByClassName("count_scarcity")[0].textContent = request.countScar;
   document.getElementsByClassName("count_misdirection")[0].textContent = request.countMisdir;
   document.getElementsByClassName("count_social_proof")[0].textContent = request.countSocial;
+  document.getElementById("scoreString").textContent = request.score;
 }
 
 

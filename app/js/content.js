@@ -5,7 +5,7 @@ var cpt_scarcity = 0;
 var cpt_misdirection = 0;
 var cpt_social = 0;
 var forcedActionString = "if you see me, there is likely an error";
-
+var score = 0;
 const darknessThreshold = 100;
 
 // Function to calculate brightness from RGB values
@@ -78,7 +78,7 @@ function addInfoIcon(element, category) {
   });
 }
 
-function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, countObs, countSneak, countScar, countMisdir, countSocial, forcedActionMessage) {
+function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, countObs, countSneak, countScar, countMisdir, countSocial, forcedActionMessage, score) {
   chrome.runtime.sendMessage({ message: "update_number", 
   countDarkPatterns: countDarkPatterns, 
   countPrice: countPrice, 
@@ -89,7 +89,8 @@ function sendNumber(countDarkPatterns, countPrice, countAction, countUrgency, co
   countScar: countScar,
   countMisdir: countMisdir,
   countSocial: countSocial,
-  forcedActionString: forcedActionMessage
+  forcedActionString: forcedActionMessage,
+  score: score
 });
 }
 
@@ -213,7 +214,7 @@ function updateContent() {
   let e2 = document.getElementById("count_number_Price");
   let e3 = document.getElementById("count_number_Action");
   //let e4 = document.getElementById("count_urgency");
-  sendNumber(e1.value, e2.value, e3.value, (cpt_urgency + e2.value), cpt_obstruction, cpt_sneaking, cpt_scarcity, cpt_misdirection, cpt_social, forcedActionString);
+  sendNumber(e1.value, e2.value, e3.value, (cpt_urgency + e2.value), cpt_obstruction, cpt_sneaking, cpt_scarcity, cpt_misdirection, cpt_social, forcedActionString, score);
 }
 
 function makePageGrey() {
@@ -322,8 +323,9 @@ async function getTextPrediction(url) {
   let { elementsArray, elementsSelectorArray } = scrapTextElements();
 
   // Send array of element details to server and retrieve response
-  const textResponse = await predictDPWithTextModel({ texts: elementsArray, url: url });
-
+  const response = await predictDPWithTextModel({ texts: elementsArray, url: url });
+  textResponse = response.results;
+  score = response.score;
   // Process the response
   textResponse.forEach((result, index) => {
     element = elementsSelectorArray[index];
