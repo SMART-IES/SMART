@@ -384,10 +384,10 @@ async function getForcedActionPrediction(url){
 
   switch(isThereForcedAction){
     case "present":
-      forcedActionString = "PopUp Analyse : This website is likely to have a forced action with a confidence of " + confidence + "%";
+      forcedActionString = "Résultat de l'analyse : Ce site contient probablement une action forcée avec " + confidence + "% de confiance.";
       break;
     case "absent":
-      forcedActionString = "PopUp Analyse : This website does not seem to have a forced action with a confidence of " + confidence + "%";
+      forcedActionString = "Résultat de l'analyse : Ce site ne comporte probablement pas d'action forcée avec " + confidence + "% de confiance.";
       break;
   }
 }
