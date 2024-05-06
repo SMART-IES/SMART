@@ -18,16 +18,17 @@ Inform clearly and precisely the users about the dark patterns present during th
 ## Requirements
 - Dataset dark patterns and their category
 - Dataset text recognition
+- Forced action image recognition model : either train it yourself or download it from https://filesender.renater.fr/?s=download&token=201280b9-cfea-473e-9750-6552eaebf0af or https://drive.google.com/drive/folders/19KObFhm64D3wkj8BK-OWNxWxE261t0dP?usp=drive_link and put it in ./darkPatternRecognition/ForcedAction
 
 ## Material
 - Install Google Chrome on your system. If you use ubuntu, you must install chrome on your ubuntu using these commands: 
 * wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 * sudo dpkg -i google-chrome-stable_current_amd64.deb
 
-- Install python packages: JupyterNotebook, Flask, flask-cors, googletrans, langdetect, postman (optional to test API) 
+- Install python packages: JupyterNotebook, Flask, flask-cors, googletrans, langdetect, html2image, tensorflow, scikit-learn, postman (optional to test API) 
 
 ## How to use
-- Generate the ForceAction model using LoadForcedActionModel.py. Model size is about 1.2GB, if you don't have enough memory to generate this model, you can use this download link: https://drive.google.com/drive/folders/19KObFhm64D3wkj8BK-OWNxWxE261t0dP?usp=drive_link
+- Generate the ForceAction model using LoadForcedActionModel.py. Model size is about 1.2GB, if you don't have enough memory to generate this model, you can use these download link: https://filesender.renater.fr/?s=download&token=201280b9-cfea-473e-9750-6552eaebf0af or https://drive.google.com/drive/folders/19KObFhm64D3wkj8BK-OWNxWxE261t0dP?usp=drive_link
 - Run server with command : python3 server.py
 - In Google Chrome, click on Manage extensions, and then click on the Developer mode in the upper right corner of the web page
 - Now click on the load unpacked button in the upper left corner, select the path of the folder app
